@@ -1,0 +1,1067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<title>EtherealAI — Website Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
+<style>
+/* ══ RESET ════════════════════════════════ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-text-size-adjust:100%}
+body{font-family:'Geist',system-ui,sans-serif;background:#09090b;color:#fafafa;overflow-x:hidden;line-height:1}
+button,input,textarea{font-family:inherit;cursor:pointer;border:none;outline:none;background:none}
+svg{display:block;flex-shrink:0}
+
+/* ══ TOKENS ════════════════════════════════ */
+:root{
+  --g:  #10b981;  /* emerald */
+  --gd: #059669;
+  --gl: rgba(16,185,129,.12);
+  --gg: rgba(16,185,129,.25);
+  --b0: #09090b;  /* background */
+  --b1: #111113;
+  --b2: #18181b;
+  --b3: #27272a;
+  --b4: #3f3f46;
+  --t1: #fafafa;
+  --t2: #a1a1aa;
+  --t3: #52525b;
+  --ln: rgba(255,255,255,.06);
+  --ln2:rgba(255,255,255,.10);
+  --r:  12px; --rl:18px; --rxl:24px; --rp:999px;
+}
+
+/* ══ KEYFRAMES ═════════════════════════════ */
+@keyframes fadeUp {from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shUp   {from{opacity:0;transform:translateY(48px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse  {0%,100%{opacity:1}50%{opacity:.3}}
+@keyframes spin   {to{transform:rotate(360deg)}}
+@keyframes blink  {0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-5px)}}
+@keyframes bubUp  {from{opacity:0;transform:translateY(20px) scale(.9)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes orbDft {0%,100%{transform:translate(0,0)}50%{transform:translate(24px,-18px)}}
+
+/* ══════════════════════════════════════════
+   LANDING PAGE
+══════════════════════════════════════════ */
+.page{min-height:100svh;display:flex;flex-direction:column}
+
+/* Nav */
+.nav{
+  position:sticky;top:0;z-index:40;height:60px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 24px;
+  background:rgba(9,9,11,.85);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--ln);
+}
+.nav-logo{display:flex;align-items:center;gap:9px}
+.nav-gem{
+  width:32px;height:32px;border-radius:9px;
+  background:linear-gradient(135deg,#10b981,#059669);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 16px var(--gg);
+}
+.nav-gem svg{width:16px;height:16px;fill:#fff}
+.nav-wordmark{font-family:'Instrument Serif',serif;font-size:18px;letter-spacing:-.2px}
+.nav-cta{
+  display:flex;align-items:center;gap:7px;
+  padding:8px 18px;border-radius:var(--rp);
+  background:linear-gradient(135deg,#10b981,#059669);
+  color:#fff;font-size:13px;font-weight:600;
+  box-shadow:0 0 20px var(--gg);min-height:38px;
+  transition:opacity .15s;
+}
+.nav-cta:hover{opacity:.9}
+.nav-cta svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* Hero */
+.hero{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;text-align:center;
+  padding:80px 24px 64px;position:relative;overflow:hidden;
+}
+.hero-orb{
+  position:absolute;border-radius:50%;pointer-events:none;filter:blur(72px);
+}
+.hero-orb-1{width:480px;height:480px;background:radial-gradient(circle,rgba(16,185,129,.13),transparent 70%);top:-160px;left:-80px;animation:orbDft 16s ease-in-out infinite}
+.hero-orb-2{width:360px;height:360px;background:radial-gradient(circle,rgba(99,102,241,.09),transparent 70%);bottom:-100px;right:-60px;animation:orbDft 20s ease-in-out infinite reverse}
+
+.hero-inner{position:relative;z-index:1;max-width:720px;width:100%}
+.hero-pill{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:5px 14px;border-radius:var(--rp);
+  border:1px solid rgba(16,185,129,.28);background:rgba(16,185,129,.07);
+  color:var(--g);font-size:11px;font-weight:600;letter-spacing:.8px;
+  text-transform:uppercase;margin-bottom:28px;
+  animation:fadeUp .5s ease both;
+}
+.hero-pill-dot{width:5px;height:5px;border-radius:50%;background:var(--g);animation:pulse 2s infinite}
+
+.hero-h1{
+  font-family:'Instrument Serif',serif;
+  font-size:clamp(42px,8vw,80px);
+  line-height:1.04;letter-spacing:-2px;margin-bottom:20px;
+  animation:fadeUp .5s .08s ease both;
+}
+.hero-h1 em{
+  font-style:italic;
+  background:linear-gradient(135deg,#10b981,#34d399,#6ee7b7);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{
+  font-size:clamp(15px,2.5vw,18px);color:var(--t2);font-weight:400;
+  line-height:1.72;max-width:520px;margin:0 auto 48px;
+  animation:fadeUp .5s .16s ease both;
+}
+.try-btn{
+  display:inline-flex;align-items:center;gap:11px;
+  padding:16px 40px;border-radius:var(--r);
+  background:linear-gradient(135deg,#10b981,#059669);color:#fff;
+  font-size:16px;font-weight:700;
+  box-shadow:0 0 40px var(--gg),0 8px 24px rgba(0,0,0,.4);
+  transition:transform .18s,box-shadow .18s;min-height:56px;
+  animation:fadeUp .5s .22s ease both;
+}
+.try-btn:hover{transform:translateY(-2px);box-shadow:0 0 60px var(--gg),0 14px 32px rgba(0,0,0,.5)}
+.try-btn:active{transform:scale(.97)}
+.try-btn svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.hero-note{font-size:12px;color:var(--t3);margin-top:18px;animation:fadeUp .5s .28s ease both}
+
+/* Sections */
+.lsec{padding:72px 24px;max-width:1100px;margin:0 auto;width:100%}
+.lsec-alt{background:var(--b1);border-top:1px solid var(--ln);border-bottom:1px solid var(--ln)}
+.lsec-alt-in{padding:72px 24px;max-width:1100px;margin:0 auto}
+.sec-label{display:inline-flex;align-items:center;gap:7px;padding:4px 12px;border-radius:var(--rp);border:1px solid rgba(16,185,129,.22);background:rgba(16,185,129,.06);color:var(--g);font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px}
+.sec-h2{font-family:'Instrument Serif',serif;font-size:clamp(28px,4.5vw,44px);letter-spacing:-.8px;line-height:1.1;margin-bottom:12px}
+.sec-sub{font-size:15px;color:var(--t2);line-height:1.7;max-width:480px;font-weight:400}
+.sec-head{text-align:center;margin-bottom:52px}
+.sec-head .sec-sub{margin:0 auto}
+
+/* Step cards */
+.grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.scard{
+  padding:28px;border-radius:var(--rl);
+  background:var(--b2);border:1px solid var(--ln);
+  transition:transform .25s,border-color .25s;
+  position:relative;overflow:hidden;
+}
+.scard::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(16,185,129,.25),transparent)}
+.scard:hover{transform:translateY(-5px);border-color:rgba(16,185,129,.18)}
+.scard-num{font-family:'Instrument Serif',serif;font-size:48px;font-style:italic;color:rgba(255,255,255,.04);line-height:1;margin-bottom:14px}
+.scard-icon{width:44px;height:44px;border-radius:11px;display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.scard-icon svg{width:22px;height:22px}
+.scard-title{font-size:17px;font-weight:600;margin-bottom:8px}
+.scard-desc{font-size:13px;color:var(--t2);line-height:1.65}
+
+/* Feature pills */
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.fpill{display:flex;align-items:flex-start;gap:12px;padding:18px;border-radius:var(--r);background:var(--b2);border:1px solid var(--ln);transition:border-color .2s}
+.fpill:hover{border-color:var(--ln2)}
+.fpill-ico{width:34px;height:34px;border-radius:9px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.18);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.fpill-ico svg{width:17px;height:17px;stroke:var(--g);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.fpill-title{font-size:13px;font-weight:600;margin-bottom:3px}
+.fpill-desc{font-size:12px;color:var(--t2);line-height:1.5}
+
+/* Quote */
+.qcard{max-width:640px;margin:0 auto;padding:48px 36px;border-radius:var(--rxl);background:var(--b2);border:1px solid var(--ln);text-align:center;position:relative}
+.qcard::before{content:'"';position:absolute;top:16px;left:28px;font-family:'Instrument Serif',serif;font-size:100px;color:rgba(16,185,129,.08);line-height:1}
+.qstars{display:flex;justify-content:center;gap:3px;margin-bottom:20px}
+.qstars svg{width:17px;height:17px;fill:#f59e0b}
+.qtext{font-family:'Instrument Serif',serif;font-size:clamp(17px,3vw,22px);font-style:italic;color:var(--t1);line-height:1.6;margin-bottom:28px}
+.qav{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--g),#6366f1);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#fff;margin:0 auto 10px;box-shadow:0 0 18px var(--gg)}
+.qname{font-size:14px;font-weight:600}
+.qrole{font-size:12px;color:var(--t3);margin-top:2px}
+
+/* CTA block */
+.ctablock{
+  border-radius:var(--rxl);
+  background:linear-gradient(135deg,#10b981,#059669);
+  padding:64px 36px;text-align:center;position:relative;overflow:hidden;
+  box-shadow:0 0 80px var(--gg),0 24px 64px rgba(0,0,0,.5);
+}
+.ctablock::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,.12),transparent 55%)}
+.cta-h2{font-family:'Instrument Serif',serif;font-size:clamp(30px,5vw,50px);color:#fff;margin-bottom:14px;letter-spacing:-1px;line-height:1.08;position:relative}
+.cta-sub{font-size:16px;color:rgba(255,255,255,.78);max-width:420px;margin:0 auto 36px;line-height:1.65;position:relative}
+.cta-btn{display:inline-flex;align-items:center;gap:9px;background:#fff;color:#059669;padding:16px 40px;border-radius:var(--r);font-size:15px;font-weight:700;min-height:54px;box-shadow:0 8px 32px rgba(0,0,0,.25);transition:transform .18s;position:relative}
+.cta-btn:hover{transform:translateY(-2px)}
+.cta-btn svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+
+footer{background:var(--b0);border-top:1px solid var(--ln);padding:36px 24px}
+.footer-in{max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px}
+.fl{display:flex;align-items:center;gap:8px}
+.fl-gem{width:22px;height:22px;border-radius:6px;background:linear-gradient(135deg,#10b981,#059669);display:flex;align-items:center;justify-content:center}
+.fl-gem svg{width:12px;height:12px;fill:#fff}
+.fl-name{font-family:'Instrument Serif',serif;font-size:15px}
+.fl-copy{font-size:11px;color:var(--t3);margin-top:4px;padding-left:30px}
+.fl-links{display:flex;gap:20px;font-size:12px;color:var(--t3)}
+.fl-links a:hover{color:var(--g)}
+
+/* ══════════════════════════════════════════
+   CHAT OVERLAY — MINIMAL & STATIC
+══════════════════════════════════════════ */
+.chat-ov{
+  display:none;position:fixed;inset:0;z-index:200;
+  background:#0f0f10;flex-direction:column;
+}
+.chat-ov.open{display:flex}
+
+/* Chat top bar — ultra minimal */
+.chat-bar{
+  height:56px;padding:0 16px;flex-shrink:0;
+  display:flex;align-items:center;justify-content:space-between;
+  background:#0f0f10;border-bottom:1px solid rgba(255,255,255,.06);
+}
+.cb-left{display:flex;align-items:center;gap:10px}
+.cb-back{
+  width:34px;height:34px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--t2);transition:background .15s;
+}
+.cb-back:hover{background:var(--b2)}
+.cb-back svg{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.cb-title{font-family:'Instrument Serif',serif;font-size:16px;color:var(--t1);letter-spacing:-.2px}
+
+/* API key inline setup — subtle */
+.key-setup{
+  display:none;
+  padding:10px 16px;flex-shrink:0;
+  background:rgba(16,185,129,.06);
+  border-bottom:1px solid rgba(16,185,129,.12);
+  align-items:center;gap:10px;flex-wrap:wrap;
+}
+.key-setup.show{display:flex}
+.key-setup-label{font-size:12px;color:var(--t2);font-weight:500;white-space:nowrap}
+.key-setup-input{
+  flex:1;min-width:160px;height:34px;
+  padding:0 12px;border-radius:8px;
+  border:1px solid rgba(255,255,255,.12);
+  background:var(--b2);color:var(--t1);
+  font-size:13px;font-family:monospace;
+  transition:border-color .2s;
+}
+.key-setup-input:focus{border-color:var(--g)}
+.key-setup-input::placeholder{color:var(--t3);font-family:'Geist',sans-serif;font-size:12px}
+.key-setup-save{
+  height:34px;padding:0 14px;border-radius:8px;
+  background:var(--g);color:#fff;font-size:12px;font-weight:600;
+  flex-shrink:0;transition:opacity .15s;
+}
+.key-setup-save:hover{opacity:.88}
+.key-get-link{font-size:11px;color:var(--g);text-decoration:underline;cursor:pointer;white-space:nowrap}
+
+/* Chat body */
+.chat-body{
+  flex:1;overflow-y:auto;display:flex;flex-direction:column;
+}
+.chat-body::-webkit-scrollbar{width:2px}
+.chat-body::-webkit-scrollbar-thumb{background:var(--b4);border-radius:2px}
+
+/* Welcome */
+.chat-welcome{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;padding:40px 20px 24px;text-align:center;
+}
+.wl-icon{
+  width:48px;height:48px;border-radius:14px;
+  background:linear-gradient(135deg,#10b981,#059669);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 24px var(--gg);margin-bottom:18px;
+}
+.wl-icon svg{width:24px;height:24px;fill:#fff}
+.wl-title{font-family:'Instrument Serif',serif;font-size:22px;letter-spacing:-.3px;margin-bottom:7px}
+.wl-sub{font-size:13px;color:var(--t2);line-height:1.65;max-width:300px}
+
+/* Bubble suggestions — small, flowing, minimal */
+.bubbles{
+  display:flex;flex-wrap:wrap;justify-content:center;
+  gap:8px;margin-top:28px;max-width:480px;
+}
+.bub{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;border-radius:var(--rp);
+  border:1px solid rgba(255,255,255,.09);
+  background:rgba(255,255,255,.04);
+  color:var(--t2);font-size:12px;font-weight:500;
+  cursor:pointer;white-space:nowrap;
+  opacity:0;animation:bubUp .45s cubic-bezier(.22,1,.36,1) forwards;
+  transition:border-color .15s,color .15s,background .15s;
+}
+.bub:hover{border-color:var(--g);color:var(--g);background:rgba(16,185,129,.07)}
+.bub:active{transform:scale(.95)}
+.bub-e{font-size:14px;line-height:1}
+
+/* Messages */
+.msg-list{
+  display:flex;flex-direction:column;gap:16px;
+  padding:20px 16px 8px;
+  max-width:700px;width:100%;margin:0 auto;
+}
+.mrow{display:flex;gap:8px;align-items:flex-end}
+.mrow.ai{flex-direction:row}
+.mrow.user{flex-direction:row-reverse}
+
+.mav{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-bottom:2px;
+}
+.mav.ai{background:linear-gradient(135deg,#10b981,#059669)}
+.mav.ai svg{width:14px;height:14px;fill:#fff}
+.mav.er{background:rgba(239,68,68,.2);border:1px solid rgba(239,68,68,.3)}
+.mav.er svg{width:13px;height:13px;stroke:#ef4444;fill:none;stroke-width:2;stroke-linecap:round}
+
+/* Bubbles — minimal, no color splash */
+.mbub{
+  max-width:calc(100% - 44px);
+  padding:11px 14px;font-size:14px;line-height:1.65;font-weight:400;
+  border-radius:16px;
+}
+.mbub.ai{
+  background:var(--b2);color:var(--t1);
+  border:1px solid rgba(255,255,255,.07);
+  border-radius:4px 16px 16px 16px;
+}
+.mbub.user{
+  background:var(--g);color:#fff;
+  border-radius:16px 4px 16px 16px;
+}
+.mbub.err{
+  background:rgba(239,68,68,.06);color:#f87171;
+  border:1px solid rgba(239,68,68,.15);
+  border-radius:4px 16px 16px 16px;
+  font-size:13px;
+}
+
+/* Typing */
+.typing{display:flex;align-items:center;gap:4px;padding:12px 16px}
+.td{width:6px;height:6px;border-radius:50%;background:var(--t3)}
+.td:nth-child(1){animation:blink 1.2s ease infinite 0s}
+.td:nth-child(2){animation:blink 1.2s ease infinite .18s}
+.td:nth-child(3){animation:blink 1.2s ease infinite .36s}
+
+/* Status bubble */
+.stat-inner{min-width:200px}
+.stat-hd{font-size:12px;font-weight:600;color:var(--t2);margin-bottom:10px;text-transform:uppercase;letter-spacing:.8px}
+.sstep{
+  display:flex;align-items:center;gap:8px;font-size:13px;font-weight:400;
+  color:var(--t3);padding:4px 0;opacity:.3;transition:opacity .4s,color .4s;
+}
+.sstep.on{opacity:1;color:var(--g)}
+.sstep.dn{opacity:.4;color:var(--g);text-decoration:line-through}
+.sdot{width:6px;height:6px;border-radius:50%;background:var(--b4);flex-shrink:0;transition:all .4s}
+.sstep.on .sdot{background:var(--g);box-shadow:0 0 0 3px rgba(16,185,129,.18);animation:pulse 1.4s infinite}
+.sstep.dn .sdot{background:var(--g)}
+.sbar{height:2px;background:var(--b3);border-radius:99px;overflow:hidden;margin-top:10px}
+.sfill{height:100%;width:0%;background:var(--g);border-radius:99px;transition:width .6s ease}
+
+/* Done actions — minimal */
+.done-acts{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.dprim{
+  display:flex;align-items:center;gap:6px;
+  padding:9px 16px;border-radius:var(--rp);
+  background:var(--g);color:#fff;font-size:12px;font-weight:600;
+  transition:opacity .15s;
+}
+.dprim:hover{opacity:.88}
+.dprim svg{width:12px;height:12px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.dghst{
+  display:flex;align-items:center;gap:6px;
+  padding:9px 16px;border-radius:var(--rp);
+  border:1px solid rgba(255,255,255,.1);background:var(--b3);
+  color:var(--t2);font-size:12px;font-weight:500;transition:border-color .15s,color .15s;
+}
+.dghst:hover{border-color:var(--g);color:var(--g)}
+.dghst svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* Input area */
+.chat-foot{
+  padding:10px 16px 18px;flex-shrink:0;
+  border-top:1px solid rgba(255,255,255,.06);
+  background:#0f0f10;
+}
+.inp-wrap{
+  display:flex;align-items:flex-end;gap:9px;
+  background:var(--b2);border:1px solid rgba(255,255,255,.09);
+  border-radius:var(--rl);padding:11px 11px 11px 16px;
+  max-width:700px;margin:0 auto;
+  transition:border-color .2s;
+}
+.inp-wrap:focus-within{border-color:rgba(16,185,129,.35)}
+.chat-ta{
+  flex:1;border:none;outline:none;resize:none;
+  background:transparent;color:var(--t1);
+  font-size:15px;line-height:1.5;font-weight:400;
+  min-height:22px;max-height:140px;overflow-y:auto;
+  caret-color:var(--g);
+}
+.chat-ta::placeholder{color:var(--t3)}
+.send-btn{
+  width:38px;height:38px;border-radius:50%;flex-shrink:0;
+  background:var(--g);
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 12px var(--gg);
+  transition:opacity .15s,transform .15s;
+}
+.send-btn:hover{opacity:.88}
+.send-btn:active{transform:scale(.92)}
+.send-btn:disabled{opacity:.3;cursor:not-allowed;transform:none}
+.send-btn svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.foot-note{max-width:700px;margin:8px auto 0;text-align:center;font-size:11px;color:var(--t3)}
+
+/* ══════════════════════════════════════════
+   RESULT SHEET
+══════════════════════════════════════════ */
+.res-ov{
+  display:none;position:fixed;inset:0;z-index:300;
+  background:rgba(0,0,0,.7);backdrop-filter:blur(12px);
+  align-items:flex-end;justify-content:center;
+}
+.res-ov.open{display:flex}
+.res-sheet{
+  width:100%;height:93svh;
+  background:var(--b1);border-radius:20px 20px 0 0;
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 -20px 72px rgba(0,0,0,.6);
+  animation:shUp .35s cubic-bezier(.22,1,.36,1);
+}
+.res-bar{
+  background:var(--b2);border-bottom:1px solid var(--ln);
+  padding:10px 14px;display:flex;align-items:center;
+  justify-content:space-between;flex-shrink:0;gap:8px;
+}
+.tabs{display:flex;gap:2px;background:var(--b3);border-radius:99px;padding:3px}
+.tabb{
+  display:flex;align-items:center;gap:5px;padding:6px 14px;
+  border-radius:99px;font-size:12px;font-weight:600;color:var(--t3);
+  border:none;background:none;transition:all .18s;min-height:30px;
+}
+.tabb svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tabb.on{background:var(--b4);color:var(--g)}
+.ra{display:flex;gap:7px}
+.rg{
+  display:flex;align-items:center;gap:5px;min-height:32px;padding:0 12px;
+  border-radius:99px;border:1px solid var(--ln2);background:var(--b3);
+  color:var(--t2);font-size:11px;font-weight:600;transition:all .15s;
+}
+.rg:hover{border-color:var(--g);color:var(--g)}
+.rg:disabled{opacity:.3;cursor:not-allowed}
+.rg svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.rp{
+  display:flex;align-items:center;gap:5px;min-height:32px;padding:0 14px;
+  border-radius:99px;background:var(--g);color:#fff;
+  font-size:11px;font-weight:600;
+}
+.rp:disabled{opacity:.3;cursor:not-allowed}
+.rp svg{width:11px;height:11px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.rx{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--b3);border:1px solid var(--ln);
+  display:flex;align-items:center;justify-content:center;color:var(--t2);
+}
+.rx svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round}
+.res-cnt{flex:1;position:relative;overflow:hidden}
+.prev-fr{width:100%;height:100%;border:none;background:#fff;display:block}
+.code-v{
+  position:absolute;inset:0;overflow:auto;padding:18px;
+  font-family:monospace;font-size:12px;line-height:1.8;
+  color:var(--t2);white-space:pre-wrap;word-break:break-all;
+  background:var(--b0);margin:0;display:none;
+}
+.res-ok{
+  display:none;padding:9px 18px;flex-shrink:0;
+  background:rgba(16,185,129,.07);border-top:1px solid rgba(16,185,129,.14);
+  align-items:center;gap:7px;font-size:12px;color:var(--g);font-weight:600;
+}
+.res-ok.show{display:flex}
+.res-ok svg{width:14px;height:14px;stroke:var(--g);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+/* ══ RESPONSIVE ═══════════════════════════ */
+@media(max-width:580px){
+  .grid3,.grid2{grid-template-columns:1fr}
+  .res-sheet{height:96svh;border-radius:16px 16px 0 0}
+  .hero-h1{letter-spacing:-1px}
+  .ctablock{padding:48px 24px}
+  .qcard{padding:36px 22px}
+  .res-bar{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════
+     LANDING PAGE
+═══════════════════════════ -->
+<div class="page">
+<nav class="nav">
+  <div class="nav-logo">
+    <div class="nav-gem"><svg viewBox="0 0 24 24"><path d="M12 2L14 9.5L22 11L14 12.5L12 20L10 12.5L2 11L10 9.5L12 2Z"/></svg></div>
+    <span class="nav-wordmark">EtherealAI</span>
+  </div>
+  <button class="nav-cta" onclick="openChat()">
+    Try Now
+    <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  </button>
+</nav>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-orb hero-orb-1"></div>
+  <div class="hero-orb hero-orb-2"></div>
+  <div class="hero-inner">
+    <div class="hero-pill"><span class="hero-pill-dot"></span>AI Website Generator</div>
+    <h1 class="hero-h1">Your idea.<br/><em>A stunning website.</em></h1>
+    <p class="hero-sub">Describe your business in plain English. Get a professional, Envato-quality landing page — complete with copy, design system, and animations — in under 30 seconds.</p>
+    <button class="try-btn" onclick="openChat()">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Start Building — Free
+    </button>
+    <p class="hero-note">Powered by Claude AI · Download as HTML · Host anywhere</p>
+  </div>
+</div>
+
+<!-- How it works -->
+<div class="lsec-alt">
+<div class="lsec-alt-in">
+  <div class="sec-head">
+    <div class="sec-label">How it works</div>
+    <h2 class="sec-h2">Three steps to a premium website</h2>
+    <p class="sec-sub">No designers. No code. Just describe and download.</p>
+  </div>
+  <div class="grid3">
+    <div class="scard">
+      <div class="scard-num">01</div>
+      <div class="scard-icon" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.18)"><svg viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+      <div class="scard-title">Chat your idea</div>
+      <p class="scard-desc">Tap Try Now and describe what your business does. Tap a suggestion bubble or type freely.</p>
+    </div>
+    <div class="scard">
+      <div class="scard-num">02</div>
+      <div class="scard-icon" style="background:rgba(99,102,241,.1);border:1px solid rgba(99,102,241,.18)"><svg viewBox="0 0 24 24" fill="none" stroke="#6366f1" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+      <div class="scard-title">AI builds everything</div>
+      <p class="scard-desc">Claude AI picks the perfect design, writes conversion copy, and builds a full 10-section page.</p>
+    </div>
+    <div class="scard">
+      <div class="scard-num">03</div>
+      <div class="scard-icon" style="background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.18)"><svg viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+      <div class="scard-title">Download &amp; go live</div>
+      <p class="scard-desc">Preview the full page. Download one HTML file. Host on Netlify, Vercel, or GitHub Pages in minutes.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Features -->
+<div class="lsec">
+  <div class="sec-head">
+    <div class="sec-label">What's included</div>
+    <h2 class="sec-h2">Production-ready, nothing to configure</h2>
+    <p class="sec-sub">Every generated page ships with the essentials built in.</p>
+  </div>
+  <div class="grid2">
+    <div class="fpill"><div class="fpill-ico"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div><div><div class="fpill-title">Fully Responsive</div><div class="fpill-desc">Perfect on every screen from 375px up.</div></div></div>
+    <div class="fpill"><div class="fpill-ico"><svg viewBox="0 0 24 24"><polyline points="4 7 4 4 20 4 20 7"/><line x1="9" y1="20" x2="15" y2="20"/><line x1="12" y1="4" x2="12" y2="20"/></svg></div><div><div class="fpill-title">Premium Typography</div><div class="fpill-desc">Unique Google Font pairing per site.</div></div></div>
+    <div class="fpill"><div class="fpill-ico"><svg viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div><div><div class="fpill-title">Conversion Copy</div><div class="fpill-desc">Benefit-driven headlines and outcome CTAs.</div></div></div>
+    <div class="fpill"><div class="fpill-ico"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><div><div class="fpill-title">Social Proof</div><div class="fpill-desc">3 testimonials with specific results + stats bar.</div></div></div>
+    <div class="fpill"><div class="fpill-ico"><svg viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div><div class="fpill-title">CSS Animations</div><div class="fpill-desc">Scroll reveals, hero transitions, hover states.</div></div></div>
+    <div class="fpill"><div class="fpill-ico"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg></div><div><div class="fpill-title">FAQ Accordion</div><div class="fpill-desc">Interactive Q&amp;A section with JS toggle.</div></div></div>
+    <div class="fpill"><div class="fpill-ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div><div><div class="fpill-title">Sticky Navigation</div><div class="fpill-desc">Blur-effect nav with smooth scroll links.</div></div></div>
+    <div class="fpill"><div class="fpill-ico"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div><div><div class="fpill-title">Single HTML File</div><div class="fpill-desc">Self-contained. Zero dependencies. Host anywhere.</div></div></div>
+  </div>
+</div>
+
+<!-- Quote -->
+<div class="lsec-alt">
+<div class="lsec-alt-in">
+  <div class="qcard">
+    <div class="qstars">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    </div>
+    <div class="qtext">"Genuinely shocked. I had a complete, beautiful landing page in under 30 seconds. The design looked like a £3,000 Envato premium template. The copy converted from day one."</div>
+    <div class="qav">SJ</div>
+    <div class="qname">Sarah Jenkins</div>
+    <div class="qrole">Founder, Bloom &amp; Grow Studio</div>
+  </div>
+</div>
+</div>
+
+<!-- CTA -->
+<div class="lsec">
+  <div class="ctablock">
+    <h2 class="cta-h2">Your website is 30 seconds away.</h2>
+    <p class="cta-sub">Describe your business, pick a vibe, and download your page. No account. No card.</p>
+    <button class="cta-btn" onclick="openChat()">
+      Start Building Free
+      <svg viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-in">
+    <div>
+      <div class="fl"><div class="fl-gem"><svg viewBox="0 0 24 24"><path d="M12 2L14 9.5L22 11L14 12.5L12 20L10 12.5L2 11L10 9.5L12 2Z"/></svg></div><span class="fl-name">EtherealAI</span></div>
+      <div class="fl-copy">© 2025 EtherealAI · Powered by Claude AI</div>
+    </div>
+    <div class="fl-links"><a href="#">Privacy</a><a href="#">Terms</a></div>
+  </div>
+</footer>
+</div><!-- /page -->
+
+
+<!-- ═══════════════════════════
+     CHAT OVERLAY — MINIMAL
+═══════════════════════════ -->
+<div class="chat-ov" id="chatOv">
+
+  <!-- Bar -->
+  <div class="chat-bar">
+    <div class="cb-left">
+      <button class="cb-back" onclick="closeChat()">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+      <span class="cb-title">EtherealAI</span>
+    </div>
+    <!-- Minimal key indicator — only shown when key missing -->
+    <div id="cbKeyHint" style="font-size:11px;color:var(--t3);display:none">
+      <span style="cursor:pointer;color:var(--g)" onclick="showKeySetup()">Add API key →</span>
+    </div>
+  </div>
+
+  <!-- Inline API key setup — subtle, non-blocking -->
+  <div class="key-setup" id="keySetup">
+    <span class="key-setup-label">Anthropic API key:</span>
+    <input type="password" id="keyInp" class="key-setup-input"
+      placeholder="sk-ant-api03-…"
+      autocomplete="off" spellcheck="false" autocorrect="off" autocapitalize="off"/>
+    <button class="key-setup-save" onclick="saveKey()">Save</button>
+    <a class="key-get-link" onclick="window.open('https://console.anthropic.com/settings/keys','_blank')">Get free key ↗</a>
+  </div>
+
+  <!-- Chat body -->
+  <div class="chat-body" id="chatBody">
+    <!-- Welcome -->
+    <div class="chat-welcome" id="chatWelcome">
+      <div class="wl-icon"><svg viewBox="0 0 24 24"><path d="M12 2L14 9.5L22 11L14 12.5L12 20L10 12.5L2 11L10 9.5L12 2Z"/></svg></div>
+      <div class="wl-title">What would you like to build?</div>
+      <div class="wl-sub">Describe your business, or tap a suggestion below to start instantly.</div>
+      <div class="bubbles" id="bubbles">
+        <button class="bub" style="animation-delay:.04s" onclick="useBub(this)"><span class="bub-e">🏋️</span>Fitness coaching</button>
+        <button class="bub" style="animation-delay:.10s" onclick="useBub(this)"><span class="bub-e">📸</span>Photography</button>
+        <button class="bub" style="animation-delay:.16s" onclick="useBub(this)"><span class="bub-e">🚀</span>SaaS product</button>
+        <button class="bub" style="animation-delay:.22s" onclick="useBub(this)"><span class="bub-e">🍕</span>Restaurant</button>
+        <button class="bub" style="animation-delay:.28s" onclick="useBub(this)"><span class="bub-e">📚</span>Online course</button>
+        <button class="bub" style="animation-delay:.34s" onclick="useBub(this)"><span class="bub-e">🏠</span>Real estate</button>
+        <button class="bub" style="animation-delay:.40s" onclick="useBub(this)"><span class="bub-e">💇</span>Beauty salon</button>
+        <button class="bub" style="animation-delay:.46s" onclick="useBub(this)"><span class="bub-e">🎸</span>Music lessons</button>
+        <button class="bub" style="animation-delay:.52s" onclick="useBub(this)"><span class="bub-e">🐾</span>Pet care</button>
+        <button class="bub" style="animation-delay:.58s" onclick="useBub(this)"><span class="bub-e">🧑‍💻</span>Freelance dev</button>
+        <button class="bub" style="animation-delay:.64s" onclick="useBub(this)"><span class="bub-e">🌿</span>Wellness brand</button>
+        <button class="bub" style="animation-delay:.70s" onclick="useBub(this)"><span class="bub-e">⚖️</span>Law firm</button>
+        <button class="bub" style="animation-delay:.76s" onclick="useBub(this)"><span class="bub-e">🏗️</span>Construction</button>
+        <button class="bub" style="animation-delay:.82s" onclick="useBub(this)"><span class="bub-e">🎨</span>Design agency</button>
+        <button class="bub" style="animation-delay:.88s" onclick="useBub(this)"><span class="bub-e">🎓</span>Tutoring</button>
+        <button class="bub" style="animation-delay:.94s" onclick="useBub(this)"><span class="bub-e">☕</span>Coffee shop</button>
+      </div>
+    </div>
+    <!-- Messages -->
+    <div class="msg-list" id="msgList" style="display:none"></div>
+  </div>
+
+  <!-- Input -->
+  <div class="chat-foot">
+    <div class="inp-wrap">
+      <textarea id="chatTa" class="chat-ta" rows="1"
+        placeholder="Describe your business…"
+        oninput="growTa(this)" onkeydown="taKey(event)"></textarea>
+      <button id="sendBtn" class="send-btn" onclick="send()">
+        <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2" stroke="none" fill="#fff"/></svg>
+      </button>
+    </div>
+    <div class="foot-note">Enter to send · Shift+Enter for new line</div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════
+     RESULT SHEET
+═══════════════════════════ -->
+<div class="res-ov" id="resOv" onclick="resBgClose(event)">
+  <div class="res-sheet">
+    <div class="res-bar">
+      <div style="display:flex;align-items:center;gap:7px">
+        <button class="rx" onclick="closeRes()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <div class="tabs">
+          <button class="tabb on" id="tabP" onclick="switchTab('p')">
+            <svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Preview
+          </button>
+          <button class="tabb" id="tabC" onclick="switchTab('c')">
+            <svg viewBox="0 0 24 24"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>Code
+          </button>
+        </div>
+      </div>
+      <div class="ra">
+        <button id="openBtn" class="rg" onclick="openNew()" disabled>
+          <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>Open
+        </button>
+        <button id="dlBtn" class="rp" onclick="dlPage()" disabled>
+          <svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download
+        </button>
+      </div>
+    </div>
+    <div class="res-cnt">
+      <iframe id="prevFr" class="prev-fr" sandbox="allow-scripts allow-same-origin"></iframe>
+      <pre class="code-v" id="codeV"></pre>
+    </div>
+    <div class="res-ok" id="resOk">
+      <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+      Page generated — preview &amp; download ready
+    </div>
+  </div>
+</div>
+
+
+<script>
+'use strict';
+
+/* ── KEY STORAGE ─────────────────────────────────
+   Simple localStorage — external hosting needs it.
+   The fetch works when key is present.
+─────────────────────────────────────────────── */
+function getKey(){ return localStorage.getItem('ea_key') || '' }
+function setKey(v){ localStorage.setItem('ea_key', v) }
+
+function showKeySetup(){
+  document.getElementById('keySetup').classList.add('show');
+  document.getElementById('keyInp').focus();
+}
+function saveKey(){
+  var v = document.getElementById('keyInp').value.trim();
+  if(!v){ return }
+  if(!v.startsWith('sk-ant')){ alert('Key must start with sk-ant-'); return }
+  setKey(v);
+  document.getElementById('keySetup').classList.remove('show');
+  document.getElementById('cbKeyHint').style.display = 'none';
+  document.getElementById('keyInp').value = '';
+}
+function checkKeyUI(){
+  var has = !!getKey();
+  document.getElementById('cbKeyHint').style.display = has ? 'none' : 'block';
+}
+
+/* ── STATE ─────────────────────────────────── */
+var pageHtml = '', chatStarted = false, stepIval = null, sStep = 0, activeTab = 'p';
+
+/* ── SUGGESTION PROMPTS ────────────────────── */
+var SUGS = {
+  'Fitness coaching':   "I'm a personal trainer helping busy professionals lose fat and build muscle in 3 sessions/week without giving up their lifestyle.",
+  'Photography':        "I'm a portrait and wedding photographer capturing authentic emotional moments. Natural light, cinematic color grading, storytelling frames.",
+  'SaaS product':       "We built an AI project management tool that helps remote teams cut meeting time by 40% and ship features 2× faster through automation.",
+  'Restaurant':         "We're a farm-to-table Italian restaurant offering seasonal tasting menus, handmade pasta, and curated natural wine for memorable occasions.",
+  'Online course':      "I teach entrepreneurs to master copywriting and write landing pages that convert — using simple frameworks, no marketing degree needed.",
+  'Real estate':        "I help first-time homebuyers navigate the property market confidently from pre-approval to keys in hand with zero stress.",
+  'Beauty salon':       "We're a boutique beauty salon specialising in personalised hair colour, skincare and nail art in a luxury, relaxed environment.",
+  'Music lessons':      "I teach guitar, piano and vocal technique to all ages from beginner to advanced from my professional home recording studio.",
+  'Pet care':           "We run a premium dog daycare and grooming service where every pet gets individual attention, enrichment and expert care.",
+  'Freelance dev':      "I build fast, modern websites and web apps for startups and small businesses — clean code, great UX, on time.",
+  'Wellness brand':     "We create certified organic wellness products — herbal supplements, teas and natural skincare rooted in Ayurvedic traditions.",
+  'Law firm':           "We're a boutique law firm providing clear, jargon-free legal advice in employment, commercial and property law.",
+  'Construction':       "We're a family-run construction firm specialising in home extensions, loft conversions and full refurbishments.",
+  'Design agency':      "We're a creative design agency helping ambitious brands stand out with distinctive visual identities, websites and campaigns.",
+  'Tutoring':           "I offer one-to-one tutoring for students aged 8–18 in maths, science and English with a proven track record of grade improvements.",
+  'Coffee shop':        "We're a specialty coffee shop sourcing single-origin beans and serving exceptional espresso, pour-overs and homemade pastries."
+};
+
+/* ── SYSTEM PROMPT — Envato-quality ────────── */
+var SYS = `You are a world-class senior web designer producing premium commercial landing pages that rival the best Envato / ThemeForest templates. Your output must be markedly better than anything ChatGPT, Lovable, or standard AI tools produce.
+
+Generate a COMPLETE, single-file HTML landing page.
+
+══ AESTHETIC DIRECTION ══
+Analyse the business type and choose ONE strong direction:
+• Luxury Dark — deep blacks, gold or emerald accents, serif display font
+• Editorial Light — off-white/cream bg, charcoal text, elegant serif + clean sans
+• Bold Startup — strong brand color as hero bg, white text, energetic sans-serif
+• Organic Warmth — warm beige/terracotta tones, earthy palette, humanist type
+• Tech Minimal — pure white or very light grey, monospace/geometric type, sharp accents
+Commit fully. Every section must reflect the chosen direction.
+
+══ TYPOGRAPHY (critical) ══
+Import exactly 2 Google Fonts via CDN link in <head>.
+Display/heading font: choose from — Playfair Display, Fraunces, Cormorant Garamond, Instrument Serif, DM Serif Display, Syne, Cabinet Grotesk, Bebas Neue (pairing only), Bricolage Grotesque
+Body font: choose from — DM Sans, Figtree, Outfit, Plus Jakarta Sans, Nunito, Geist, Albert Sans
+FORBIDDEN fonts: Inter, Roboto, Arial, Helvetica, Open Sans, Lato, Montserrat, system-ui
+Hero headline: 68–96px on desktop, tight letter-spacing (−2px to −4px), bold
+Clear typographic hierarchy across all 6 heading levels
+
+══ COLOR SYSTEM ══
+Create a 6-variable CSS palette:
+--primary: (brand color derived from business type)
+--primary-dark: (darker shade for hover)
+--primary-light: (subtle bg tint, rgba)
+--neutral-900: (text color)
+--neutral-50: (light bg)
+--accent: (complementary accent for highlights)
+Use CSS custom properties everywhere. Apply color with boldness.
+
+══ MANDATORY SECTIONS (in order) ══
+1. Sticky nav: backdrop-filter blur, logo, 3 nav links, CTA button
+2. Full-viewport hero: bold headline with styled accent word in <span>, subheadline, 2 CTAs (primary + ghost), hero visual (abstract CSS shape or gradient block — NO img tags with src URLs)
+3. Horizontal stats bar: 4 metrics (specific numbers + labels)
+4. Value proposition: 2-col layout (icon grid left, headline + text right)
+5. Services/features: 3-card grid — icon SVG, bold title, description, hover lift
+6. Process: 3 numbered steps with connector line between them
+7. Testimonials: 3 cards — CSS avatar initials, name, role, quote with specific result
+8. FAQ: 3 Q&As using HTML <details><summary> accordion
+9. CTA section: high contrast, single big headline, one button
+10. Footer: logo, tagline, 3 nav columns, social icon row, copyright
+
+══ TECHNICAL REQUIREMENTS ══
+• Return ONLY raw HTML — absolutely nothing before <!DOCTYPE html>, nothing after </html>
+• NO markdown, NO backticks, NO explanation text whatsoever
+• All CSS in one <style> tag using CSS custom properties
+• All JS in one <script> tag at bottom (smooth scroll, sticky nav class toggle, scroll reveal)
+• Mobile-first, fully responsive: breakpoints at 768px and 480px
+• CSS animations: hero fades up on load (keyframe), cards reveal on scroll (IntersectionObserver + class)
+• Hover effects: cards lift with box-shadow, buttons change bg, nav links underline-slide
+• Sticky nav: adds background/shadow class on scroll via JS
+• FAQ: HTML <details> native accordion, styled with CSS
+
+══ CONTENT RULES ══
+• Hero headline: emotionally compelling outcome, max 8 words, one accent word in styled <span>, use <br> for drama
+• Write realistic, specific business copy throughout — not placeholder text
+• Stats: specific credible numbers (e.g. "2,847 clients", "4.9★", "98% retention")
+• Testimonials: full first+last name, specific job title, quote mentioning a concrete measurable result
+• CTAs: action verb + immediate benefit (e.g. "Book Your Free Consultation", "Download the App")
+• Reassurance microcopy under primary CTAs
+
+OUTPUT: Raw HTML only. Start immediately with <!DOCTYPE html>.`;
+
+/* ── HELPERS ──────────────────────────────── */
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;') }
+function delay(ms){ return new Promise(function(r){setTimeout(r,ms)}) }
+function scrollBot(){ var b=document.getElementById('chatBody'); b.scrollTop=b.scrollHeight }
+
+/* ── NAV ──────────────────────────────────── */
+function openChat(){
+  document.getElementById('chatOv').classList.add('open');
+  document.body.style.overflow='hidden';
+  checkKeyUI();
+  document.getElementById('chatTa').focus();
+}
+function closeChat(){
+  document.getElementById('chatOv').classList.remove('open');
+  document.body.style.overflow='';
+}
+
+/* ── SUGGESTIONS ──────────────────────────── */
+function useBub(btn){
+  var emoji=btn.querySelector('.bub-e').textContent;
+  var label=btn.textContent.replace(emoji,'').trim();
+  var ta=document.getElementById('chatTa');
+  ta.value=SUGS[label]||label;
+  growTa(ta); ta.focus();
+}
+
+/* ── INPUT ────────────────────────────────── */
+function growTa(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,140)+'px' }
+function taKey(e){ if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send()} }
+
+/* ── CHAT DOM ─────────────────────────────── */
+function startThread(){
+  if(!chatStarted){
+    chatStarted=true;
+    document.getElementById('chatWelcome').style.display='none';
+    document.getElementById('msgList').style.display='flex';
+  }
+}
+function appendRow(h){
+  startThread();
+  var l=document.getElementById('msgList');
+  var d=document.createElement('div');d.innerHTML=h;
+  var r=d.firstElementChild;l.appendChild(r);scrollBot();return r;
+}
+var AI_AV='<div class="mav ai"><svg viewBox="0 0 24 24"><path d="M12 2L14 9.5L22 11L14 12.5L12 20L10 12.5L2 11L10 9.5L12 2Z"/></svg></div>';
+function addUser(t){ appendRow('<div class="mrow user"><div class="mbub user">'+esc(t)+'</div></div>') }
+function addTyping(){ return appendRow('<div class="mrow ai" id="typRow">'+AI_AV+'<div class="mbub ai"><div class="typing"><span class="td"></span><span class="td"></span><span class="td"></span></div></div></div>') }
+function rmEl(id){ var e=document.getElementById(id); if(e)e.parentNode.removeChild(e) }
+
+function addStatus(){
+  return appendRow(
+    '<div class="mrow ai" id="statRow">'+AI_AV+
+    '<div class="mbub ai"><div class="stat-inner">'+
+    '<div class="stat-hd">Building your page</div>'+
+    '<div class="sstep" id="ss1"><div class="sdot"></div>Understanding your business</div>'+
+    '<div class="sstep" id="ss2"><div class="sdot"></div>Selecting design system &amp; palette</div>'+
+    '<div class="sstep" id="ss3"><div class="sdot"></div>Writing conversion copy</div>'+
+    '<div class="sstep" id="ss4"><div class="sdot"></div>Building layout &amp; animations</div>'+
+    '<div class="sstep" id="ss5"><div class="sdot"></div>Finalising &amp; polishing</div>'+
+    '<div class="sbar"><div class="sfill" id="sfill"></div></div>'+
+    '</div></div></div>'
+  );
+}
+function addDone(){
+  appendRow(
+    '<div class="mrow ai">'+AI_AV+
+    '<div class="mbub ai">'+
+    '<div style="font-size:14px;font-weight:600;color:#34d399;margin-bottom:5px">✅ Your website is ready</div>'+
+    '<div style="font-size:13px;color:var(--t2);margin-bottom:12px;line-height:1.6">Your premium landing page is generated. Preview or download below.</div>'+
+    '<div class="done-acts">'+
+    '<button class="dprim" onclick="openRes()"><svg viewBox="0 0 24 24"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>Preview</button>'+
+    '<button class="dghst" onclick="dlPage()"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Download</button>'+
+    '</div></div></div>'
+  );
+}
+function addErr(msg, isAuth){
+  var extra = isAuth
+    ? '<div style="font-size:12px;color:var(--t3);margin-top:8px">Enter your Anthropic API key above to generate pages. <span style="color:var(--g);cursor:pointer" onclick="showKeySetup()">Add key →</span></div>'
+    : '<div style="font-size:12px;color:var(--t3);margin-top:6px">Please try again.</div>';
+  appendRow('<div class="mrow ai"><div class="mav er"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div><div class="mbub err">'+esc(msg)+extra+'</div></div>');
+}
+
+/* ── STEPS ────────────────────────────────── */
+var SIDS=['ss1','ss2','ss3','ss4','ss5'];
+function startSteps(){
+  sStep=0;
+  SIDS.forEach(function(id){var e=document.getElementById(id);if(e)e.classList.remove('on','dn')});
+  var f=document.getElementById('sfill');if(f)f.style.width='0%';
+  stepIval=setInterval(function(){
+    if(sStep>0){var p=document.getElementById(SIDS[sStep-1]);if(p){p.classList.remove('on');p.classList.add('dn')}}
+    if(sStep<SIDS.length){
+      var c=document.getElementById(SIDS[sStep]);if(c)c.classList.add('on');
+      sStep++;
+      var ff=document.getElementById('sfill');if(ff)ff.style.width=((sStep/SIDS.length)*85)+'%';
+      scrollBot();
+    }
+  },5500);
+}
+function stopSteps(){
+  clearInterval(stepIval);
+  var f=document.getElementById('sfill');if(f)f.style.width='100%';
+  SIDS.forEach(function(id){var e=document.getElementById(id);if(e){e.classList.remove('on');e.classList.add('dn')}});
+}
+
+/* ── SEND ─────────────────────────────────── */
+async function send(){
+  var key = getKey();
+
+  var raw = document.getElementById('chatTa').value.trim();
+  if(!raw){
+    document.getElementById('chatTa').style.outline='1.5px solid #ef4444';
+    setTimeout(function(){document.getElementById('chatTa').style.outline=''},2000);
+    return;
+  }
+
+  /* If no key, prompt for it first */
+  if(!key){
+    addUser(raw);
+    addErr('An API key is required to generate pages.', true);
+    showKeySetup();
+    document.getElementById('chatTa').value='';
+    document.getElementById('chatTa').style.height='auto';
+    return;
+  }
+
+  var ta=document.getElementById('chatTa');
+  var idea=raw; ta.value=''; ta.style.height='auto'; ta.style.outline='';
+  document.getElementById('sendBtn').disabled=true;
+
+  addUser(idea);
+  addTyping();
+  await delay(700);
+  rmEl('typRow');
+  addStatus();
+  startSteps();
+
+  try{
+    var res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key': key,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-opus-4-5',
+        max_tokens:8192,
+        system:SYS,
+        messages:[{
+          role:'user',
+          content:'Build a premium landing page for this business:\n\n'+idea+'\n\nChoose the most fitting aesthetic direction, color palette, and font pairing. Make it outstanding.'
+        }]
+      })
+    });
+
+    if(!res.ok){
+      var eb=await res.json().catch(function(){return{}});
+      var isA=res.status===401||res.status===403;
+      if(isA) setKey(''); /* clear bad key */
+      throw new Error((eb.error&&eb.error.message)||('Request failed — HTTP '+res.status));
+    }
+
+    var data=await res.json();
+    var raw2=(data.content&&data.content[0]&&data.content[0].text)||'';
+    raw2=raw2.replace(/^```html\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/i,'').trim();
+    if(!raw2.includes('<!DOCTYPE')&&!raw2.includes('<html')) throw new Error('Unexpected response format. Please try again.');
+
+    pageHtml=raw2;
+    stopSteps(); rmEl('statRow');
+
+    document.getElementById('prevFr').srcdoc=pageHtml;
+    document.getElementById('codeV').textContent=pageHtml;
+    document.getElementById('prevFr').style.display='block';
+    document.getElementById('codeV').style.display='none';
+    document.getElementById('tabP').classList.add('on');
+    document.getElementById('tabC').classList.remove('on');
+    document.getElementById('resOk').classList.add('show');
+    document.getElementById('dlBtn').disabled=false;
+    document.getElementById('openBtn').disabled=false;
+    addDone();
+
+  }catch(e){
+    stopSteps(); rmEl('statRow');
+    var isAuth=e.message.indexOf('401')!==-1||e.message.indexOf('403')!==-1||e.message.toLowerCase().indexOf('authentication')!==-1||e.message.toLowerCase().indexOf('invalid x-api-key')!==-1;
+    if(isAuth){ setKey(''); checkKeyUI(); }
+    addErr(e.message, isAuth);
+    console.error('[EtherealAI]', e);
+  }
+  document.getElementById('sendBtn').disabled=false;
+}
+
+/* ── RESULT ───────────────────────────────── */
+function openRes(){ document.getElementById('resOv').classList.add('open') }
+function closeRes(){ document.getElementById('resOv').classList.remove('open') }
+function resBgClose(e){ if(e.target.id==='resOv') closeRes() }
+function switchTab(t){
+  activeTab=t;
+  document.getElementById('tabP').classList.toggle('on',t==='p');
+  document.getElementById('tabC').classList.toggle('on',t==='c');
+  document.getElementById('prevFr').style.display=t==='p'?'block':'none';
+  document.getElementById('codeV').style.display=t==='c'?'block':'none';
+}
+function dlPage(){
+  if(!pageHtml) return;
+  var slug=document.getElementById('chatTa').value.trim().substring(0,28).toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')||'page';
+  var a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([pageHtml],{type:'text/html'}));
+  a.download=slug+'-ethereal.html'; a.click(); URL.revokeObjectURL(a.href);
+}
+function openNew(){
+  if(!pageHtml) return;
+  window.open(URL.createObjectURL(new Blob([pageHtml],{type:'text/html'})),'_blank');
+}
+
+/* ── KEY INPUT: Enter to save ─────────────── */
+document.getElementById('keyInp').addEventListener('keydown',function(e){
+  if(e.key==='Enter') saveKey();
+});
+</script>
+</body>
+</html>
