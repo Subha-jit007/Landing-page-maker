@@ -1,0 +1,1145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<title>EtherealAI — Website Generator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;0,800;1,700&display=swap" rel="stylesheet"/>
+<style>
+/* ── RESET ─────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%}
+body{
+  font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+  background:#fbf9f4;color:#1e2022;
+  overflow-x:hidden;min-height:100vh;
+}
+img,svg{display:block;max-width:100%}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+textarea,input{font-family:inherit}
+a{text-decoration:none;color:inherit}
+
+/* ── TOKENS ─────────────────────────────────────────── */
+:root{
+  --teal:       #016b65;
+  --teal-dark:  #014e49;
+  --teal-light: #9ff1ea;
+  --teal-pale:  rgba(1,107,101,0.09);
+  --teal-glow:  rgba(1,107,101,0.20);
+  --blue-pale:  #cde5ff;
+  --yellow-pale:#fceeb3;
+  --surface:    #fbf9f4;
+  --surface-2:  #f5f4ed;
+  --surface-3:  #efeee7;
+  --border:     rgba(0,0,0,0.08);
+  --border-2:   rgba(0,0,0,0.12);
+  --text:       #1e2022;
+  --text-2:     #4a4d50;
+  --text-3:     #878c91;
+  --grad:       linear-gradient(135deg,#016b65 0%,#014e49 100%);
+  --shadow-sm:  0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md:  0 4px 16px rgba(0,0,0,.08), 0 2px 6px rgba(0,0,0,.04);
+  --shadow-lg:  0 12px 40px rgba(0,0,0,.12), 0 4px 12px rgba(0,0,0,.06);
+  --shadow-xl:  0 24px 64px rgba(0,0,0,.14), 0 8px 20px rgba(0,0,0,.06);
+  --r-sm: 10px; --r-md:16px; --r-lg:20px; --r-xl:28px; --r-full:999px;
+}
+
+/* ── KEYFRAMES ─────────────────────────────────────── */
+@keyframes spin       { to{transform:rotate(360deg)} }
+@keyframes slideUp    { from{transform:translateY(56px);opacity:0} to{transform:translateY(0);opacity:1} }
+@keyframes toastIn    { from{transform:translateX(-50%) translateY(12px);opacity:0} to{transform:translateX(-50%) translateY(0);opacity:1} }
+@keyframes pulse-dot  { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.4);opacity:.6} }
+@keyframes shimmer    { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+
+/* ── NAV ─────────────────────────────────────────────── */
+.nav{
+  position:sticky;top:0;z-index:50;
+  background:rgba(251,249,244,0.88);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+}
+.nav-inner{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:14px 20px;max-width:1100px;margin:0 auto;
+}
+.nav-logo{display:flex;align-items:center;gap:10px}
+.nav-logo-icon{
+  width:38px;height:38px;border-radius:12px;
+  background:var(--grad);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;box-shadow:0 4px 12px var(--teal-glow);
+}
+.nav-logo-icon svg{width:22px;height:22px;fill:#e1fffb}
+.nav-wordmark{font-size:19px;font-weight:800;letter-spacing:-0.4px;color:var(--text)}
+.nav-key-btn{
+  display:flex;align-items:center;gap:8px;
+  min-height:44px;padding:0 18px;
+  border-radius:var(--r-full);
+  border:1.5px solid var(--border-2);
+  background:var(--surface);
+  color:var(--text-2);font-size:14px;font-weight:600;
+  transition:border-color .2s,color .2s,box-shadow .2s;
+  box-shadow:var(--shadow-sm);
+}
+.nav-key-btn:hover{border-color:var(--teal);color:var(--teal);box-shadow:0 0 0 3px var(--teal-pale)}
+.nav-key-btn svg{width:16px;height:16px;stroke:currentColor;fill:none}
+
+/* ── KEY BANNER ─────────────────────────────────────── */
+.key-banner{
+  display:none;
+  background:linear-gradient(135deg,#fdf3c8,#fceeb3);
+  border-bottom:1px solid rgba(180,155,60,.2);
+  padding:11px 20px;
+  align-items:center;justify-content:space-between;gap:12px;
+  position:sticky;top:67px;z-index:40;
+}
+.key-banner.show{display:flex}
+.key-banner-text{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:#5a4a10}
+.key-banner-text svg{width:16px;height:16px;fill:#8a7020;flex-shrink:0}
+.key-banner-btn{
+  display:flex;align-items:center;gap:6px;
+  min-height:36px;padding:0 16px;
+  border-radius:var(--r-full);
+  background:var(--grad);color:#e1fffb;
+  font-size:13px;font-weight:700;flex-shrink:0;
+  box-shadow:0 4px 12px var(--teal-glow);
+}
+.key-banner-btn svg{width:14px;height:14px;stroke:#e1fffb;fill:none}
+
+/* ── HERO ────────────────────────────────────────────── */
+.hero{
+  position:relative;overflow:hidden;
+  padding:52px 20px 48px;
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;max-width:800px;margin:0 auto;
+}
+.hero-orb{position:absolute;border-radius:50%;pointer-events:none}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 18px;border-radius:var(--r-full);
+  background:var(--blue-pale);color:#2a5480;
+  font-size:13px;font-weight:700;margin-bottom:24px;
+  border:1px solid rgba(62,98,130,.15);
+  box-shadow:var(--shadow-sm);
+}
+.hero-badge svg{width:14px;height:14px;fill:#2a5480}
+.hero-h1{
+  font-size:clamp(36px,9vw,64px);font-weight:800;
+  line-height:1.06;letter-spacing:-1.5px;color:var(--text);
+  margin-bottom:18px;
+}
+.hero-h1 em{color:var(--teal);font-style:italic}
+.hero-sub{
+  font-size:clamp(15px,3vw,18px);color:var(--text-2);
+  max-width:540px;line-height:1.75;margin-bottom:40px;font-weight:500;
+}
+
+/* ── GENERATOR CARD ─────────────────────────────────── */
+.gen-card{
+  width:100%;max-width:680px;
+  background:#fff;border-radius:var(--r-xl);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow-xl);
+  overflow:hidden;
+}
+
+/* Textarea zone */
+.gen-textarea-wrap{padding:20px 20px 0}
+textarea#mainInput{
+  width:100%;border:none;outline:none;resize:none;
+  font-size:16px;line-height:1.65;color:var(--text);
+  background:transparent;min-height:80px;max-height:200px;overflow-y:auto;
+  font-weight:500;
+}
+textarea#mainInput::placeholder{color:var(--text-3);font-weight:400}
+
+/* Example chips section */
+.ex-section{padding:12px 20px 16px}
+.ex-label{
+  font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:1.8px;color:var(--text-3);margin-bottom:10px;
+}
+.ex-chips{display:flex;flex-wrap:wrap;gap:8px}
+.ex-chip{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 16px;border-radius:var(--r-full);
+  border:1.5px solid var(--border-2);
+  background:var(--surface-2);
+  font-size:14px;font-weight:600;color:var(--text-2);
+  transition:all .18s;min-height:42px;
+  box-shadow:var(--shadow-sm);
+  letter-spacing:-0.1px;
+}
+.ex-chip .chip-emoji{font-size:18px;line-height:1}
+.ex-chip:hover,.ex-chip.sel{
+  border-color:var(--teal);color:var(--teal);
+  background:var(--teal-pale);
+  box-shadow:0 0 0 3px var(--teal-pale),var(--shadow-sm);
+  transform:translateY(-1px);
+}
+
+/* Divider */
+.gen-divider{height:1px;background:var(--border);margin:0 20px}
+
+/* Tone section */
+.tone-section{padding:14px 20px 12px}
+.tone-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.8px;color:var(--text-3);margin-bottom:10px}
+.tone-chips{display:flex;flex-wrap:wrap;gap:8px}
+.tone-chip{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:9px 16px;border-radius:var(--r-full);
+  border:1.5px solid var(--border-2);
+  background:var(--surface-2);
+  font-size:13px;font-weight:700;color:var(--text-2);
+  transition:all .18s;min-height:42px;
+  box-shadow:var(--shadow-sm);
+  letter-spacing:-0.1px;
+}
+.tone-chip .t-icon{font-size:15px;line-height:1}
+.tone-chip:hover{border-color:rgba(1,107,101,.4);color:var(--teal);transform:translateY(-1px)}
+.tone-chip.active{
+  border-color:var(--teal);color:var(--teal);
+  background:var(--teal-pale);
+  box-shadow:0 0 0 3px var(--teal-pale),var(--shadow-sm);
+}
+
+/* Generate button zone */
+.gen-btn-zone{padding:14px 16px 18px}
+.gen-btn{
+  width:100%;min-height:56px;
+  border-radius:var(--r-lg);
+  background:var(--grad);color:#e1fffb;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  font-size:17px;font-weight:800;letter-spacing:-0.2px;
+  box-shadow:0 6px 24px var(--teal-glow),0 2px 6px rgba(0,0,0,.1);
+  transition:transform .15s,box-shadow .15s,opacity .15s;
+  position:relative;overflow:hidden;
+}
+.gen-btn::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.12) 0%,transparent 60%);
+  pointer-events:none;
+}
+.gen-btn:hover{transform:translateY(-1px);box-shadow:0 10px 32px var(--teal-glow)}
+.gen-btn:active{transform:scale(.98)}
+.gen-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
+.gen-btn svg{width:22px;height:22px;fill:#e1fffb;flex-shrink:0}
+.gen-hint{font-size:12px;color:var(--text-3);text-align:center;margin-top:10px}
+.gen-hint span{color:var(--teal);font-weight:700;cursor:pointer}
+
+/* ── LOADING PANEL ──────────────────────────────────── */
+.loading-panel{
+  display:none;width:100%;max-width:680px;margin-top:20px;
+}
+.loading-card{
+  background:#fff;border-radius:var(--r-xl);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow-xl);
+  padding:40px 28px;
+  display:flex;flex-direction:column;align-items:center;gap:24px;
+}
+.spinner-wrap{position:relative;width:60px;height:60px;display:flex;align-items:center;justify-content:center}
+.spinner-ring{
+  position:absolute;width:60px;height:60px;border-radius:50%;
+  border:3px solid var(--teal-light);border-top-color:var(--teal);
+  animation:spin 1s linear infinite;
+}
+.spinner-icon{position:relative;z-index:1}
+.spinner-icon svg{width:24px;height:24px;fill:var(--teal)}
+.loading-title{font-size:17px;font-weight:700;color:var(--text);text-align:center}
+.loading-sub{font-size:13px;color:var(--text-3);text-align:center;margin-top:4px}
+.steps-list{width:100%;max-width:300px;display:flex;flex-direction:column;gap:2px}
+.step-row{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 14px;border-radius:12px;
+  font-size:14px;font-weight:500;color:var(--text-3);
+  opacity:.3;transition:opacity .4s,color .4s,background .4s;
+}
+.step-row.active{opacity:1;color:var(--teal);background:var(--teal-pale)}
+.step-row.done{opacity:.5;color:var(--teal);text-decoration:line-through}
+.step-dot{width:8px;height:8px;border-radius:50%;background:var(--border-2);flex-shrink:0;transition:all .4s}
+.step-row.active .step-dot{background:var(--teal);box-shadow:0 0 0 4px rgba(1,107,101,.2);animation:pulse-dot 1.5s ease-in-out infinite}
+.step-row.done .step-dot{background:var(--teal)}
+.prog-track{height:4px;background:var(--surface-3);border-radius:var(--r-full);width:200px;overflow:hidden}
+.prog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--teal),#3e6282);border-radius:var(--r-full);transition:width .6s ease}
+
+/* ── SECTIONS ───────────────────────────────────────── */
+.page-section{padding:64px 20px;max-width:1100px;margin:0 auto}
+.section-bg{background:var(--surface-2)}
+.section-bg-inner{max-width:1100px;margin:0 auto;padding:64px 20px}
+.section-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 18px;border-radius:var(--r-full);
+  background:var(--teal-light);color:#004844;
+  font-size:13px;font-weight:700;margin-bottom:20px;
+  border:1px solid rgba(1,107,101,.15);
+}
+.section-badge svg{width:14px;height:14px;fill:#004844}
+.section-h2{font-size:clamp(26px,5vw,40px);font-weight:800;letter-spacing:-0.8px;margin-bottom:12px;color:var(--text)}
+.section-sub{font-size:16px;color:var(--text-2);max-width:420px;line-height:1.65;font-weight:500}
+.section-head{text-align:center;margin-bottom:48px}
+
+/* Card grids */
+.cards-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+.cards-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+
+/* How-it-works card */
+.hiw-card{
+  background:#fff;padding:28px;border-radius:var(--r-lg);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow-md);
+  transition:transform .28s,box-shadow .28s;
+}
+.hiw-card:hover{transform:translateY(-5px);box-shadow:var(--shadow-lg)}
+.hiw-num{font-size:44px;font-weight:800;line-height:1;margin-bottom:16px}
+.hiw-icon{
+  width:52px;height:52px;border-radius:14px;
+  display:flex;align-items:center;justify-content:center;margin-bottom:16px;
+  box-shadow:var(--shadow-sm);
+}
+.hiw-icon svg{width:26px;height:26px}
+.hiw-title{font-size:17px;font-weight:700;margin-bottom:8px;color:var(--text)}
+.hiw-desc{font-size:14px;color:var(--text-2);line-height:1.65}
+
+/* Feature mini card */
+.feat-card{
+  background:#fff;padding:20px;border-radius:var(--r-md);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow-sm);
+  display:flex;align-items:flex-start;gap:14px;
+  transition:transform .28s,box-shadow .28s;
+}
+.feat-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-md)}
+.feat-icon{
+  width:40px;height:40px;border-radius:10px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  background:var(--teal-pale);
+}
+.feat-icon svg{width:20px;height:20px;fill:var(--teal)}
+.feat-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.feat-desc{font-size:13px;color:var(--text-2);line-height:1.5}
+
+/* ── QUOTE SECTION ─────────────────────────────────── */
+.quote-section{padding:56px 20px;margin:0 16px 40px;background:var(--surface-2);border-radius:var(--r-xl);border:1px solid var(--border)}
+.quote-stars{display:flex;justify-content:center;gap:4px;margin-bottom:24px}
+.quote-stars svg{width:22px;height:22px;fill:#f59e0b}
+blockquote{
+  font-size:clamp(17px,3vw,22px);font-style:italic;font-weight:600;
+  line-height:1.65;color:var(--text);margin:0 0 32px;
+  max-width:600px;margin-left:auto;margin-right:auto;text-align:center;
+}
+.quote-author{display:flex;flex-direction:column;align-items:center;gap:6px}
+.quote-avatar{
+  width:48px;height:48px;border-radius:50%;
+  background:var(--teal-light);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;font-weight:800;color:#004844;
+  border:2px solid rgba(1,107,101,.2);
+}
+.quote-name{font-size:15px;font-weight:700;color:var(--text)}
+.quote-role{font-size:13px;color:var(--text-3)}
+
+/* ── CTA SECTION ───────────────────────────────────── */
+.cta-section{padding:0 16px 64px}
+.cta-card{
+  max-width:960px;margin:0 auto;border-radius:var(--r-xl);
+  background:var(--grad);padding:56px 32px;text-align:center;
+  position:relative;overflow:hidden;
+  box-shadow:0 24px 64px var(--teal-glow);
+}
+.cta-orb{position:absolute;border-radius:50%;pointer-events:none}
+.cta-h2{font-size:clamp(28px,5vw,44px);font-weight:800;color:#e1fffb;margin-bottom:16px;letter-spacing:-1px}
+.cta-sub{font-size:clamp(14px,2.5vw,18px);color:rgba(159,241,234,.85);max-width:440px;margin:0 auto 36px;line-height:1.65;font-weight:500}
+.cta-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  background:#fff;color:var(--teal);border:none;cursor:pointer;
+  padding:16px 40px;border-radius:var(--r-md);
+  font-family:inherit;font-size:16px;font-weight:800;min-height:56px;
+  box-shadow:0 8px 32px rgba(0,0,0,.2);transition:transform .2s,box-shadow .2s;
+  letter-spacing:-0.2px;
+}
+.cta-btn:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(0,0,0,.25)}
+
+/* ── FOOTER ─────────────────────────────────────────── */
+footer{background:var(--surface-2);border-top:1px solid var(--border);padding:36px 20px}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:20px}
+.footer-logo{display:flex;align-items:center;gap:8px}
+.footer-logo-icon{width:24px;height:24px;border-radius:7px;background:var(--grad);display:flex;align-items:center;justify-content:center}
+.footer-logo-icon svg{width:14px;height:14px;fill:#e1fffb}
+.footer-wordmark{font-size:15px;font-weight:800;color:var(--text)}
+.footer-copy{font-size:12px;color:var(--text-3);margin-top:4px}
+.footer-links{display:flex;gap:20px;font-size:13px;color:var(--text-3)}
+.footer-links a{transition:color .2s}
+.footer-links a:hover,.footer-links span:hover{color:var(--teal)}
+.footer-links span{cursor:pointer;font-weight:600;color:var(--teal)}
+
+/* ── RESULT BOTTOM SHEET ────────────────────────────── */
+.overlay{
+  display:none;position:fixed;inset:0;z-index:100;
+  background:rgba(30,32,34,.55);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+  align-items:flex-end;justify-content:center;
+}
+.overlay.open{display:flex}
+.bottom-sheet{
+  width:100%;height:93svh;background:var(--surface);
+  border-radius:24px 24px 0 0;
+  display:flex;flex-direction:column;overflow:hidden;
+  box-shadow:0 -24px 80px rgba(0,0,0,.22);
+  animation:slideUp .4s cubic-bezier(.22,1,.36,1);
+}
+.sheet-bar{
+  background:#fff;border-bottom:1px solid var(--border);
+  padding:12px 16px;display:flex;align-items:center;
+  justify-content:space-between;flex-shrink:0;gap:10px;
+}
+.sheet-close{
+  width:40px;height:40px;border-radius:50%;
+  background:var(--surface-3);color:var(--text-2);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:background .2s;
+}
+.sheet-close:hover{background:var(--surface-2)}
+.sheet-close svg{width:20px;height:20px;stroke:currentColor;fill:none}
+.tab-row{display:flex;gap:3px;background:var(--surface-3);border-radius:var(--r-full);padding:3px}
+.tab-btn{
+  display:flex;align-items:center;gap:6px;
+  padding:7px 16px;border-radius:var(--r-full);
+  font-size:13px;font-weight:700;color:var(--text-3);
+  transition:all .2s;min-height:36px;
+}
+.tab-btn svg{width:14px;height:14px;stroke:currentColor;fill:none}
+.tab-btn.active{background:#fff;color:var(--teal);box-shadow:0 2px 10px rgba(0,0,0,.1)}
+.sheet-actions{display:flex;align-items:center;gap:8px}
+.btn-ghost{
+  display:flex;align-items:center;gap:6px;
+  min-height:40px;padding:0 16px;
+  border-radius:var(--r-full);
+  border:1.5px solid var(--border-2);
+  background:var(--surface);
+  color:var(--text-2);font-size:13px;font-weight:600;
+  transition:all .2s;
+}
+.btn-ghost:hover{border-color:var(--teal);color:var(--teal)}
+.btn-ghost svg{width:15px;height:15px;stroke:currentColor;fill:none}
+.btn-primary{
+  display:flex;align-items:center;gap:6px;
+  min-height:40px;padding:0 18px;
+  border-radius:var(--r-full);
+  background:var(--grad);color:#e1fffb;
+  font-size:13px;font-weight:700;
+  box-shadow:0 4px 14px var(--teal-glow);
+  transition:all .2s;
+}
+.btn-primary svg{width:15px;height:15px;stroke:#e1fffb;fill:none}
+.btn-primary:disabled,.btn-ghost:disabled{opacity:.4;cursor:not-allowed}
+.sheet-content{flex:1;position:relative;overflow:hidden}
+.preview-iframe{width:100%;height:100%;border:none;background:#fff;display:block}
+.code-pre{
+  flex:1;overflow:auto;padding:20px;
+  font-family:'Fira Code',monospace;font-size:12px;
+  line-height:1.85;color:var(--text-2);
+  white-space:pre-wrap;word-break:break-all;
+  background:var(--surface-2);margin:0;display:none;
+}
+.success-bar{
+  display:none;padding:10px 20px;
+  background:rgba(1,107,101,.08);border-top:1px solid rgba(1,107,101,.18);
+  align-items:center;gap:8px;font-size:13px;color:var(--teal);font-weight:600;flex-shrink:0;
+}
+.success-bar.show{display:flex}
+.success-bar svg{width:18px;height:18px;fill:var(--teal);flex-shrink:0}
+
+/* ── API MODAL ─────────────────────────────────────── */
+.api-sheet{
+  width:100%;max-width:520px;background:#fff;
+  border-radius:28px 28px 0 0;
+  padding:28px 24px 52px;
+  box-shadow:0 -20px 80px rgba(0,0,0,.18);
+  animation:slideUp .4s cubic-bezier(.22,1,.36,1);
+  max-height:94svh;overflow-y:auto;
+}
+.drag-handle{width:40px;height:4px;border-radius:var(--r-full);background:var(--surface-3);margin:0 auto 24px}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.modal-title{font-size:21px;font-weight:800;color:var(--text);letter-spacing:-0.4px}
+.step-block{
+  display:flex;gap:14px;padding:16px;
+  background:var(--surface-2);border-radius:var(--r-md);
+  border:1px solid var(--border);margin-bottom:14px;
+}
+.step-num{
+  width:30px;height:30px;border-radius:50%;
+  background:var(--teal-pale);color:var(--teal);
+  font-size:14px;font-weight:800;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;
+}
+.step-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+.step-desc{font-size:13px;color:var(--text-2);line-height:1.6;margin-bottom:14px}
+.step-desc code{background:var(--surface-3);padding:2px 7px;border-radius:6px;font-size:12px;font-family:monospace}
+.console-btn{
+  width:100%;min-height:54px;border-radius:var(--r-md);
+  background:var(--grad);color:#e1fffb;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  font-size:15px;font-weight:800;
+  box-shadow:0 6px 20px var(--teal-glow);
+  transition:transform .15s,box-shadow .15s;
+  letter-spacing:-0.2px;
+}
+.console-btn:hover{transform:translateY(-1px);box-shadow:0 10px 28px var(--teal-glow)}
+.console-btn svg{width:18px;height:18px;fill:#e1fffb}
+.console-btn .ext-icon{width:16px;height:16px;stroke:#e1fffb;fill:none}
+.key-input-wrap{position:relative}
+.key-input{
+  width:100%;min-height:50px;padding:0 48px 0 16px;
+  border-radius:12px;border:1.5px solid var(--border-2);
+  background:var(--surface);font-family:monospace;font-size:14px;
+  color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s;
+}
+.key-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-pale)}
+.vis-btn{
+  position:absolute;right:12px;top:50%;transform:translateY(-50%);
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  color:var(--text-3);border-radius:8px;transition:color .2s;
+}
+.vis-btn:hover{color:var(--teal)}
+.vis-btn svg{width:18px;height:18px;stroke:currentColor;fill:none}
+.key-status{font-size:12px;min-height:18px;font-weight:600;text-align:center;margin-top:8px}
+.save-btn{
+  width:100%;min-height:56px;border-radius:var(--r-lg);
+  background:var(--grad);color:#e1fffb;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  font-size:17px;font-weight:800;letter-spacing:-0.2px;
+  box-shadow:0 8px 28px var(--teal-glow);
+  transition:transform .15s,box-shadow .15s;
+}
+.save-btn:hover{transform:translateY(-1px)}
+.save-btn:active{transform:scale(.98)}
+.save-btn svg{width:22px;height:22px;fill:#e1fffb}
+.privacy-note{font-size:12px;color:var(--text-3);text-align:center;margin-top:16px;line-height:1.6}
+
+/* ── TOAST ─────────────────────────────────────────── */
+.toast{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+  background:#1e2022;color:#e1fffb;font-size:13px;font-weight:600;
+  padding:13px 24px;border-radius:var(--r-full);z-index:500;
+  box-shadow:0 8px 32px rgba(0,0,0,.28);
+  white-space:nowrap;max-width:90vw;text-align:center;
+  animation:toastIn .3s ease;
+}
+@media(max-width:600px){
+  .bottom-sheet{height:96svh;border-radius:20px 20px 0 0}
+  .api-sheet{border-radius:24px 24px 0 0;padding:24px 20px 44px}
+  .sheet-bar{flex-wrap:wrap}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <div class="nav-logo">
+      <div class="nav-logo-icon">
+        <!-- sparkle icon -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 2L13.5 9.5L21 11L13.5 12.5L12 20L10.5 12.5L3 11L10.5 9.5L12 2Z" fill="#e1fffb"/><circle cx="19" cy="4" r="1.5" fill="rgba(225,255,251,0.6)"/><circle cx="5" cy="19" r="1" fill="rgba(225,255,251,0.5)"/></svg>
+      </div>
+      <span class="nav-wordmark">EtherealAI</span>
+    </div>
+    <button class="nav-key-btn" onclick="openApiModal()">
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+      API Key
+    </button>
+  </div>
+</nav>
+
+<!-- NO-KEY BANNER -->
+<div class="key-banner" id="keyBanner">
+  <div class="key-banner-text">
+    <svg viewBox="0 0 24 24"><path d="M12 22C6.477 22 2 17.523 2 12S6.477 2 12 2s10 4.477 10 10-4.477 10-10 10zm-1-11v6h2v-6h-2zm0-4v2h2V7h-2z"/></svg>
+    Add your free API key to start generating
+  </div>
+  <button class="key-banner-btn" onclick="openApiModal()">
+    <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+    Set Key
+  </button>
+</div>
+
+<!-- HERO -->
+<section class="hero">
+  <!-- Decorative orbs -->
+  <div class="hero-orb" style="width:480px;height:480px;background:radial-gradient(circle,rgba(1,107,101,.1) 0%,transparent 70%);top:-180px;right:-180px;z-index:0"></div>
+  <div class="hero-orb" style="width:360px;height:360px;background:radial-gradient(circle,rgba(62,98,130,.07) 0%,transparent 70%);bottom:-80px;left:-100px;z-index:0"></div>
+
+  <!-- Badge -->
+  <div class="hero-badge" style="position:relative;z-index:1">
+    <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    AI Website Generator &nbsp;·&nbsp; Ready in ~30 seconds
+  </div>
+
+  <!-- Headline -->
+  <h1 class="hero-h1" style="position:relative;z-index:1">
+    Describe your idea.<br/><em>Get a full website.</em>
+  </h1>
+  <p class="hero-sub" style="position:relative;z-index:1">
+    Tell us what you do in plain English. Our AI writes the copy, designs the layout, and delivers a ready-to-download page in seconds.
+  </p>
+
+  <!-- GENERATOR CARD -->
+  <div class="gen-card" style="position:relative;z-index:1">
+
+    <!-- Textarea -->
+    <div class="gen-textarea-wrap">
+      <textarea id="mainInput" rows="3" oninput="autoGrow(this)"
+        placeholder="e.g. I'm a fitness coach helping busy professionals lose fat and build strength without giving up their lifestyle…"></textarea>
+    </div>
+
+    <!-- Example chips -->
+    <div class="ex-section">
+      <div class="ex-label">Tap an example to start</div>
+      <div class="ex-chips" id="exChips">
+        <button class="ex-chip" onclick="fillExample(this)"><span class="chip-emoji">🧘</span> Yoga studio</button>
+        <button class="ex-chip" onclick="fillExample(this)"><span class="chip-emoji">📸</span> Photography</button>
+        <button class="ex-chip" onclick="fillExample(this)"><span class="chip-emoji">💼</span> SaaS startup</button>
+        <button class="ex-chip" onclick="fillExample(this)"><span class="chip-emoji">🍽️</span> Restaurant</button>
+        <button class="ex-chip" onclick="fillExample(this)"><span class="chip-emoji">📚</span> Online course</button>
+        <button class="ex-chip" onclick="fillExample(this)"><span class="chip-emoji">🏠</span> Real estate</button>
+      </div>
+    </div>
+
+    <div class="gen-divider"></div>
+
+    <!-- Tone chips -->
+    <div class="tone-section">
+      <div class="tone-label">Page vibe</div>
+      <div class="tone-chips">
+        <button class="tone-chip active" data-tone="Premium & Bold"><span class="t-icon">✦</span> Premium</button>
+        <button class="tone-chip" data-tone="Minimal & Clean"><span class="t-icon">○</span> Minimal</button>
+        <button class="tone-chip" data-tone="Warm & Friendly"><span class="t-icon">☀</span> Warm</button>
+        <button class="tone-chip" data-tone="Dark & Cinematic"><span class="t-icon">◈</span> Dark</button>
+        <button class="tone-chip" data-tone="Energetic & Bold"><span class="t-icon">⚡</span> Energetic</button>
+        <button class="tone-chip" data-tone="Corporate & Trust"><span class="t-icon">◻</span> Corporate</button>
+      </div>
+    </div>
+
+    <!-- Generate button -->
+    <div class="gen-btn-zone">
+      <button id="genBtn" class="gen-btn" onclick="generate()">
+        <!-- sparkle svg -->
+        <svg id="genIcon" viewBox="0 0 24 24"><path d="M12 2L13.5 9.5L21 11L13.5 12.5L12 20L10.5 12.5L3 11L10.5 9.5L12 2Z"/></svg>
+        <span id="genBtnText">Magic Create</span>
+      </button>
+      <p class="gen-hint">Ctrl + Enter to generate &nbsp;·&nbsp; <span onclick="openApiModal()">Set API key →</span></p>
+    </div>
+  </div>
+
+  <!-- LOADING PANEL -->
+  <div class="loading-panel" id="loadingPanel">
+    <div class="loading-card">
+      <div class="spinner-wrap">
+        <div class="spinner-ring"></div>
+        <div class="spinner-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2L13.5 9.5L21 11L13.5 12.5L12 20L10.5 12.5L3 11L10.5 9.5L12 2Z" fill="#016b65"/></svg>
+        </div>
+      </div>
+      <div>
+        <div class="loading-title">Crafting your website…</div>
+        <div class="loading-sub">Usually ready in about 30 seconds</div>
+      </div>
+      <div class="steps-list">
+        <div class="step-row" id="step1"><div class="step-dot"></div>Analyzing your business</div>
+        <div class="step-row" id="step2"><div class="step-dot"></div>Crafting copy &amp; structure</div>
+        <div class="step-row" id="step3"><div class="step-dot"></div>Applying design system</div>
+        <div class="step-row" id="step4"><div class="step-dot"></div>Writing clean HTML</div>
+        <div class="step-row" id="step5"><div class="step-dot"></div>Polishing final output</div>
+      </div>
+      <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<div class="section-bg" style="margin:0 16px;border-radius:24px;border:1px solid var(--border)">
+<div class="section-bg-inner">
+  <div class="section-head">
+    <div class="section-badge">
+      <svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm1 14.93V17a1 1 0 0 1-2 0v-.07A8.001 8.001 0 0 1 4.07 9H5a1 1 0 0 1 0 2 6 6 0 0 0 5 5.92zm2-8.93a1 1 0 0 1-2 0V7a1 1 0 0 1 2 0v1zm-5 0a1 1 0 0 1-2 0V7a1 1 0 0 1 2 0v1z"/></svg>
+      How it works
+    </div>
+    <h2 class="section-h2">Three steps to your website</h2>
+    <p class="section-sub" style="margin:0 auto">No designers. No developers. No weeks of waiting.</p>
+  </div>
+  <div class="cards-3">
+    <div class="hiw-card">
+      <div class="hiw-icon" style="background:#e8faf8;"><svg viewBox="0 0 24 24" fill="none" stroke="#016b65" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+      <div class="hiw-num" style="color:#c7f0eb;">01</div>
+      <div class="hiw-title">Describe your idea</div>
+      <p class="hiw-desc">Type what you do — or tap an example prompt to start instantly with one tap.</p>
+    </div>
+    <div class="hiw-card">
+      <div class="hiw-icon" style="background:#ddeeff;"><svg viewBox="0 0 24 24" fill="none" stroke="#3e6282" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg></div>
+      <div class="hiw-num" style="color:#c5dcf5;">02</div>
+      <div class="hiw-title">AI crafts everything</div>
+      <p class="hiw-desc">In ~30s our AI writes copy, picks the perfect fonts and colors, and builds a pixel-perfect page.</p>
+    </div>
+    <div class="hiw-card">
+      <div class="hiw-icon" style="background:#fef9e0;"><svg viewBox="0 0 24 24" fill="none" stroke="#8a7020" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
+      <div class="hiw-num" style="color:#f6e8a0;">03</div>
+      <div class="hiw-title">Download &amp; launch</div>
+      <p class="hiw-desc">Preview, grab the HTML file, and host on Netlify or GitHub Pages. Live in minutes.</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- FEATURES -->
+<div class="page-section">
+  <div class="section-head">
+    <h2 class="section-h2">Everything built in</h2>
+    <p class="section-sub" style="margin:0 auto">Every page ships ready to convert.</p>
+  </div>
+  <div class="cards-2">
+    <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h7" fill="none" stroke="#016b65" stroke-width="2" stroke-linecap="round"/></svg></div><div><div class="feat-title">Fully Responsive</div><div class="feat-desc">Flawless on mobile, tablet &amp; desktop.</div></div></div>
+    <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" fill="none" stroke="#016b65" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div><div class="feat-title">Compelling Copy</div><div class="feat-desc">Benefit-driven headlines &amp; CTAs.</div></div></div>
+    <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#016b65" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="#016b65"/></svg></div><div><div class="feat-title">Custom Branding</div><div class="feat-desc">Fonts &amp; colors matched to your vibe.</div></div></div>
+    <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" fill="#016b65" stroke="#016b65" stroke-width="1"/></svg></div><div><div class="feat-title">Testimonials</div><div class="feat-desc">3 realistic social proof sections.</div></div></div>
+    <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24"><line x1="3" y1="12" x2="21" y2="12" stroke="#016b65" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="6" x2="21" y2="6" stroke="#016b65" stroke-width="2" stroke-linecap="round"/><line x1="3" y1="18" x2="21" y2="18" stroke="#016b65" stroke-width="2" stroke-linecap="round"/></svg></div><div><div class="feat-title">Sticky Navigation</div><div class="feat-desc">Smooth-scroll nav built in.</div></div></div>
+    <div class="feat-card"><div class="feat-icon"><svg viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" fill="none" stroke="#016b65" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="7 10 12 15 17 10" fill="none" stroke="#016b65" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="15" x2="12" y2="3" stroke="#016b65" stroke-width="2" stroke-linecap="round"/></svg></div><div><div class="feat-title">Single HTML File</div><div class="feat-desc">Drop it anywhere. Zero dependencies.</div></div></div>
+  </div>
+</div>
+
+<!-- QUOTE -->
+<div class="quote-section" style="margin:0 16px 40px;text-align:center">
+  <div class="quote-stars">
+    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+    <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+  </div>
+  <blockquote>"I had a beautiful landing page that converted customers in under a minute. The copy was better than what I'd have written after three weeks."</blockquote>
+  <div class="quote-author">
+    <div class="quote-avatar">SJ</div>
+    <div class="quote-name">Sarah Jenkins</div>
+    <div class="quote-role">Founder, Bloom &amp; Grow Artisans</div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="cta-section">
+  <div class="cta-card">
+    <div class="cta-orb" style="width:280px;height:280px;background:rgba(159,241,234,.12);top:-100px;right:-80px"></div>
+    <div class="cta-orb" style="width:240px;height:240px;background:rgba(205,229,255,.1);bottom:-80px;left:-60px"></div>
+    <div style="position:relative;z-index:1">
+      <h2 class="cta-h2">Ready to see the magic?</h2>
+      <p class="cta-sub">Your website is 30 seconds away. No credit card. No signup.</p>
+      <button class="cta-btn" onclick="window.scrollTo({top:0,behavior:'smooth'});setTimeout(function(){document.getElementById('mainInput').focus()},600)">
+        Build My Page — It's Free
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">
+        <div class="footer-logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2L13.5 9.5L21 11L13.5 12.5L12 20L10.5 12.5L3 11L10.5 9.5L12 2Z"/></svg></div>
+        <div class="footer-wordmark">EtherealAI</div>
+      </div>
+      <div class="footer-copy" style="margin-top:6px;margin-left:32px">© 2025 EtherealAI · Powered by Claude AI</div>
+    </div>
+    <div class="footer-links">
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+      <span onclick="openApiModal()">API Key</span>
+    </div>
+  </div>
+</footer>
+
+
+<!-- ══════════════════════════════════
+     RESULT BOTTOM SHEET
+════════════════════════════════════ -->
+<div class="overlay" id="resultOverlay" onclick="closeResultBg(event)">
+  <div class="bottom-sheet">
+    <div class="sheet-bar">
+      <div style="display:flex;align-items:center;gap:8px">
+        <button class="sheet-close" onclick="closeResult()">
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+        <div class="tab-row">
+          <button class="tab-btn active" id="tabPreview" onclick="switchTab('preview')">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+            Preview
+          </button>
+          <button class="tab-btn" id="tabCode" onclick="switchTab('code')">
+            <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+            HTML
+          </button>
+        </div>
+      </div>
+      <div class="sheet-actions">
+        <button id="openBtn" class="btn-ghost" onclick="openInNew()" disabled>
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+          <span style="display:none" id="openLabel">Open</span>
+        </button>
+        <button id="dlBtn" class="btn-primary" onclick="downloadPage()" disabled>
+          <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download
+        </button>
+      </div>
+    </div>
+    <div class="sheet-content">
+      <iframe id="previewFrame" class="preview-iframe" sandbox="allow-scripts allow-same-origin"></iframe>
+      <pre class="code-pre" id="codeView"></pre>
+    </div>
+    <div class="success-bar" id="successBar">
+      <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" fill="none" stroke="#016b65" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><polyline points="22 4 12 14.01 9 11.01" fill="none" stroke="#016b65" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Page generated — download is ready
+    </div>
+  </div>
+</div>
+
+
+<!-- ══════════════════════════════════
+     API KEY BOTTOM SHEET
+════════════════════════════════════ -->
+<div class="overlay" id="apiOverlay" onclick="closeApiModalBg(event)">
+  <div class="api-sheet">
+    <div class="drag-handle"></div>
+    <div class="modal-header">
+      <div class="modal-title">Connect Your API Key</div>
+      <button class="sheet-close" onclick="closeApiModal()">
+        <svg viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <p style="font-size:14px;color:var(--text-2);line-height:1.65;margin:8px 0 20px;font-weight:500">
+      EtherealAI uses your own Anthropic API key. It's <strong style="color:var(--text)">free</strong> to get and stays only in your browser — never shared.
+    </p>
+
+    <!-- Step 1 -->
+    <div class="step-block">
+      <div class="step-num">1</div>
+      <div style="flex:1;min-width:0">
+        <div class="step-title">Get your free API key</div>
+        <div class="step-desc">Click below → sign into Anthropic Console → open <strong>API Keys</strong> → tap <strong>Create Key</strong> → copy it.</div>
+        <button class="console-btn" onclick="window.open('https://console.anthropic.com/settings/keys','_blank')">
+          <svg viewBox="0 0 24 24"><path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"/></svg>
+          Generate API Key on Anthropic Console
+          <svg class="ext-icon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div class="step-block">
+      <div class="step-num">2</div>
+      <div style="flex:1;min-width:0">
+        <div class="step-title">Paste your key here</div>
+        <div class="step-desc">Your key starts with <code>sk-ant-</code></div>
+        <div class="key-input-wrap">
+          <input type="password" id="apiKeyInput" class="key-input" placeholder="sk-ant-api03-…"/>
+          <button class="vis-btn" onclick="toggleKeyVis()">
+            <svg id="keyVisIcon" viewBox="0 0 24 24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        <p class="key-status" id="keyStatus"></p>
+      </div>
+    </div>
+
+    <button class="save-btn" onclick="saveKey()">
+      <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" fill="none" stroke="#e1fffb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><polyline points="22 4 12 14.01 9 11.01" fill="none" stroke="#e1fffb" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Save &amp; Start Generating
+    </button>
+    <p class="privacy-note">🔒 Stored only in your browser · Never sent to our servers</p>
+  </div>
+</div>
+
+
+<script>
+// ── STATE ─────────────────────────────────────────────
+var generatedHTML = '';
+var selectedTone  = 'Premium & Bold';
+var activeTab     = 'preview';
+var stepInterval  = null;
+var curStep       = 0;
+
+// ── SYSTEM PROMPT ──────────────────────────────────────
+var SYSTEM_PROMPT = [
+  "You are a world-class web designer and conversion copywriter who builds stunning, high-converting landing pages.",
+  "",
+  "Generate a COMPLETE, single-file HTML landing page based on the user's business description.",
+  "",
+  "DESIGN RULES:",
+  "- Choose a DISTINCTIVE, intentional color palette — max 3 core colors with one bold accent",
+  "- Typography: Import from Google Fonts. STRICTLY FORBIDDEN: Arial, Roboto, Inter, system-ui. Use striking display fonts (Fraunces, Playfair Display, Cormorant, Syne, DM Serif, Cabinet Grotesk, Instrument Serif, etc.) paired with a clean body font.",
+  "- Layout sections (in order): Full-width hero, social proof stats bar, value/about section, features (3), testimonials (3 realistic), CTA, footer",
+  "- Mobile-first responsive — flawless at 375px",
+  "- Bold typographic hierarchy with generous whitespace",
+  "- Avoid: purple gradients on white, excessive glows, generic AI aesthetics",
+  "",
+  "TECHNICAL RULES:",
+  "- Return ONLY raw HTML. No explanation. No markdown. No backticks. Nothing before <!DOCTYPE html>. Nothing after </html>.",
+  "- Everything inline in one file — no external CSS/JS files",
+  "- Google Fonts CDN link in <head>",
+  "- Fully responsive with media queries",
+  "- Smooth scroll: html { scroll-behavior: smooth }",
+  "- Sticky nav with logo + CTA + anchor links",
+  "- CSS animations for hero reveal, hover states on cards and buttons",
+  "",
+  "CONTENT RULES:",
+  "- Hero headline: Outcome-focused, max 8 words, use <br> for dramatic line breaks",
+  "- Sub-headline: Human, clear, benefit-forward, max 20 words",
+  "- CTA text: Action verb + tangible outcome",
+  "- Stats bar: 4 specific impressive numbers",
+  "- Features: 3 core benefits with emoji icon, bold title, 2-line description",
+  "- Testimonials: 3 with full names, job titles, SPECIFIC results with numbers",
+  "- All copy benefit-driven (not feature-driven)",
+  "",
+  "STRICTLY OUTPUT RAW HTML ONLY."
+].join("\n");
+
+// ── EXAMPLES ───────────────────────────────────────────
+var EXAMPLES = {
+  '🧘 Yoga studio':   "I run a yoga & mindfulness studio helping stressed professionals find calm, flexibility, and mental clarity through group classes and private sessions.",
+  '📸 Photography':   "I'm a portrait & wedding photographer capturing authentic emotional moments for couples and families. My style is natural light and cinematic color grading.",
+  '💼 SaaS startup':  "We built an AI project management tool that helps remote teams cut meeting time by 40% and ship features faster through smart task automation.",
+  '🍽️ Restaurant':   "We're a farm-to-table Italian restaurant offering seasonal tasting menus, handmade pasta, and a curated natural wine list for date nights and celebrations.",
+  '📚 Online course': "I teach busy entrepreneurs how to master copywriting and write landing pages that convert using simple frameworks — no marketing degree needed.",
+  '🏠 Real estate':   "I'm a real estate agent helping first-time homebuyers navigate the market with confidence, from pre-approval to closing, with zero stress."
+};
+
+function fillExample(btn) {
+  var label = btn.querySelector('.chip-emoji').nextSibling.textContent.trim();
+  var key   = btn.querySelector('.chip-emoji').textContent.trim() + ' ' + label;
+  var inp   = document.getElementById('mainInput');
+  inp.value = EXAMPLES[key] || '';
+  autoGrow(inp); inp.focus();
+  document.querySelectorAll('.ex-chip').forEach(function(c){ c.classList.remove('sel'); });
+  btn.classList.add('sel');
+}
+
+function autoGrow(el) {
+  el.style.height = 'auto';
+  el.style.height = Math.min(el.scrollHeight, 200) + 'px';
+}
+
+// ── TONE CHIPS ─────────────────────────────────────────
+document.querySelectorAll('.tone-chip').forEach(function(btn) {
+  btn.addEventListener('click', function() {
+    document.querySelectorAll('.tone-chip').forEach(function(b){ b.classList.remove('active'); });
+    btn.classList.add('active');
+    selectedTone = btn.dataset.tone;
+  });
+});
+
+// ── LOADING STEPS ──────────────────────────────────────
+var STEP_IDS = ['step1','step2','step3','step4','step5'];
+
+function startLoadingAnim() {
+  curStep = 0;
+  STEP_IDS.forEach(function(id) {
+    var el = document.getElementById(id);
+    el.classList.remove('active','done');
+  });
+  document.getElementById('progFill').style.width = '0%';
+  stepInterval = setInterval(function() {
+    if (curStep > 0) {
+      var prev = document.getElementById(STEP_IDS[curStep-1]);
+      prev.classList.remove('active'); prev.classList.add('done');
+    }
+    if (curStep < STEP_IDS.length) {
+      document.getElementById(STEP_IDS[curStep]).classList.add('active');
+      curStep++;
+      document.getElementById('progFill').style.width = ((curStep / STEP_IDS.length) * 88) + '%';
+    }
+  }, 4500);
+}
+
+function stopLoadingAnim() {
+  clearInterval(stepInterval);
+  document.getElementById('progFill').style.width = '100%';
+  STEP_IDS.forEach(function(id) {
+    var el = document.getElementById(id);
+    el.classList.remove('active'); el.classList.add('done');
+  });
+}
+
+// ── API KEY ────────────────────────────────────────────
+function getKey() { return localStorage.getItem('ethereal_key') || ''; }
+
+function openApiModal() {
+  document.getElementById('apiOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+  var k = getKey(), inp = document.getElementById('apiKeyInput');
+  inp.value = k ? k.substring(0,24)+'...' : '';
+  inp.type  = 'password';
+  document.getElementById('keyVisIcon').setAttribute('data-vis','0');
+  document.getElementById('keyStatus').textContent = '';
+  document.getElementById('keyStatus').style.color = '';
+}
+function closeApiModal() {
+  document.getElementById('apiOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+function closeApiModalBg(e) { if (e.target.id === 'apiOverlay') closeApiModal(); }
+
+function toggleKeyVis() {
+  var inp  = document.getElementById('apiKeyInput');
+  var icon = document.getElementById('keyVisIcon');
+  if (inp.type === 'password') {
+    inp.type = 'text';
+    icon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><line x1="1" y1="1" x2="23" y2="23" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>';
+  } else {
+    inp.type = 'password';
+    icon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="2"/>';
+  }
+}
+
+function saveKey() {
+  var val    = document.getElementById('apiKeyInput').value.trim();
+  var status = document.getElementById('keyStatus');
+  if (!val || val.includes('...')) { status.textContent='⚠ Please paste your API key'; status.style.color='#c0392b'; return; }
+  if (!val.startsWith('sk-ant'))   { status.textContent='⚠ Key should start with sk-ant…'; status.style.color='#c0392b'; return; }
+  localStorage.setItem('ethereal_key', val);
+  status.textContent='✓ Key saved! Ready to generate.'; status.style.color='#016b65';
+  updateKeyBanner();
+  setTimeout(closeApiModal, 1400);
+}
+
+function updateKeyBanner() {
+  var b = document.getElementById('keyBanner');
+  if (!getKey()) b.classList.add('show'); else b.classList.remove('show');
+}
+updateKeyBanner();
+
+// ── RESULT SHEET ───────────────────────────────────────
+function openResult() { document.getElementById('resultOverlay').classList.add('open'); document.body.style.overflow='hidden'; }
+function closeResult() { document.getElementById('resultOverlay').classList.remove('open'); document.body.style.overflow=''; }
+function closeResultBg(e) { if (e.target.id==='resultOverlay') closeResult(); }
+
+function switchTab(tab) {
+  activeTab = tab;
+  document.getElementById('tabPreview').classList.toggle('active', tab==='preview');
+  document.getElementById('tabCode').classList.toggle('active', tab==='code');
+  document.getElementById('previewFrame').style.display = tab==='preview' ? 'block' : 'none';
+  document.getElementById('codeView').style.display     = tab==='code'    ? 'block' : 'none';
+}
+
+// ── DOWNLOAD / OPEN ────────────────────────────────────
+function downloadPage() {
+  if (!generatedHTML) return;
+  var slug = document.getElementById('mainInput').value.trim().substring(0,30).toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'') || 'my-page';
+  var a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([generatedHTML],{type:'text/html'}));
+  a.download = slug+'-ethereal.html'; a.click(); URL.revokeObjectURL(a.href);
+}
+function openInNew() {
+  if (!generatedHTML) return;
+  window.open(URL.createObjectURL(new Blob([generatedHTML],{type:'text/html'})),'_blank');
+}
+
+// ── TOAST ──────────────────────────────────────────────
+function showToast(msg, isErr) {
+  var t = document.createElement('div');
+  t.className='toast'; t.style.background=isErr?'#7b1d1a':'#1e2022'; t.innerHTML=msg;
+  document.body.appendChild(t);
+  setTimeout(function(){ t.style.opacity='0'; t.style.transition='opacity .5s'; }, 4000);
+  setTimeout(function(){ if(t.parentNode) t.parentNode.removeChild(t); }, 4600);
+}
+
+// ── GENERATE ───────────────────────────────────────────
+async function generate() {
+  var key = getKey();
+  if (!key) { openApiModal(); return; }
+
+  var idea = document.getElementById('mainInput').value.trim();
+  if (!idea) {
+    document.getElementById('mainInput').style.outline = '2px solid #c0392b';
+    document.getElementById('mainInput').focus();
+    showToast('⚠️ Please describe your business first', true);
+    return;
+  }
+  document.getElementById('mainInput').style.outline = '';
+
+  // Loading UI
+  var btn = document.getElementById('genBtn');
+  btn.disabled = true;
+  document.getElementById('genBtnText').textContent = 'Generating…';
+  document.getElementById('genIcon').innerHTML = '<animateTransform attributeName="transform" type="rotate" from="0 12 12" to="360 12 12" dur="1s" repeatCount="indefinite"/><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" stroke="#e1fffb" stroke-width="2" stroke-linecap="round" fill="none"/>';
+  document.getElementById('loadingPanel').style.display = 'block';
+  document.getElementById('loadingPanel').scrollIntoView({behavior:'smooth',block:'center'});
+  startLoadingAnim();
+
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'x-api-key':key,
+        'anthropic-version':'2023-06-01',
+        'anthropic-dangerous-direct-browser-access':'true'
+      },
+      body:JSON.stringify({
+        model:'claude-opus-4-5',
+        max_tokens:8000,
+        system:SYSTEM_PROMPT,
+        messages:[{role:'user',content:'Business idea: '+idea+'\nTone: '+selectedTone+'\n\nGenerate a complete premium landing page.'}]
+      })
+    });
+
+    if (!res.ok) {
+      var errData = await res.json().catch(function(){return{};});
+      throw new Error((errData.error && errData.error.message) || ('API error '+res.status));
+    }
+
+    var data = await res.json();
+    var html = (data.content && data.content[0] && data.content[0].text) || '';
+    html = html.replace(/^```html\s*/i,'').replace(/^```\s*/i,'').replace(/```\s*$/i,'').trim();
+
+    if (!html.includes('<!DOCTYPE') && !html.includes('<html')) throw new Error('Invalid HTML returned. Please try again.');
+
+    generatedHTML = html;
+
+    // Success
+    stopLoadingAnim();
+    document.getElementById('loadingPanel').style.display = 'none';
+    btn.disabled = false;
+    document.getElementById('genBtnText').textContent = 'Magic Create';
+    document.getElementById('genIcon').innerHTML = '<path d="M12 2L13.5 9.5L21 11L13.5 12.5L12 20L10.5 12.5L3 11L10.5 9.5L12 2Z"/>';
+
+    document.getElementById('previewFrame').srcdoc = html;
+    document.getElementById('codeView').textContent = html;
+    document.getElementById('previewFrame').style.display = 'block';
+    document.getElementById('codeView').style.display = 'none';
+    document.getElementById('tabPreview').classList.add('active');
+    document.getElementById('tabCode').classList.remove('active');
+    document.getElementById('successBar').classList.add('show');
+    document.getElementById('dlBtn').disabled  = false;
+    document.getElementById('openBtn').disabled = false;
+
+    openResult();
+
+  } catch(err) {
+    stopLoadingAnim();
+    document.getElementById('loadingPanel').style.display = 'none';
+    btn.disabled = false;
+    document.getElementById('genBtnText').textContent = 'Magic Create';
+    document.getElementById('genIcon').innerHTML = '<path d="M12 2L13.5 9.5L21 11L13.5 12.5L12 20L10.5 12.5L3 11L10.5 9.5L12 2Z"/>';
+
+    var isAuth = err.message.indexOf('401') !== -1 || err.message.toLowerCase().indexOf('invalid') !== -1;
+    showToast(isAuth ? '🔑 Invalid API key — tap to fix' : '⚠️ ' + err.message, true);
+    if (isAuth) setTimeout(openApiModal, 1800);
+    console.error('[EtherealAI]', err);
+  }
+}
+
+// ── KEYBOARD SHORTCUT ──────────────────────────────────
+document.getElementById('mainInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) generate();
+});
+</script>
+</body>
+</html>
